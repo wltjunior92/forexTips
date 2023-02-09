@@ -7,18 +7,18 @@ import BearImg from '@assets/bear.png';
 import TrendUpSvg from '@assets/trendUp.svg';
 import TrendDownSvg from '@assets/trendDown.svg';
 
-type Props = {
+export type SignalCardProps = {
   type: 'buy' | 'sell';
   pair: string;
   limit: number;
   take1: number;
   take2: number;
   stopLoss: number;
-  result: number;
+  result?: number;
   expired: boolean;
 }
 
-export function SignalCard({ type, pair, limit, take1, take2, stopLoss, result, expired }: Props) {
+export function SignalCard({ type, pair, limit, take1, take2, stopLoss, result, expired }: SignalCardProps) {
   const { colors, sizes } = useTheme();
 
   const win = Dimensions.get('window')
@@ -70,9 +70,14 @@ export function SignalCard({ type, pair, limit, take1, take2, stopLoss, result, 
         {
           expired &&
           <VStack>
-            <Text color="gray.300" fontSize="xs">
-              Resultado: {result} pontos
-            </Text>
+            <HStack>
+              <Text color="gray.300" fontSize="xs" mr={2}>
+                Resultado:
+              </Text>
+              <Text color={!!result && result > 0 ? 'green.700' : 'red.600'} fontSize="xs">
+                {result} pontos
+              </Text>
+            </HStack>
             <Text color="gray.300" fontSize="xs">
               EXPIRADO
             </Text>

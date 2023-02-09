@@ -1,10 +1,33 @@
-import { Center, Text } from "native-base";
+import { useEffect, useState } from 'react';
+import { Dimensions } from 'react-native';
+import { useTheme, VStack } from 'native-base';
+import { WebView } from 'react-native-webview';
 
+import { getTradingView } from '@utils/TradingView';
+import { Header } from '@components/Header';
 
 export function TradeChart() {
+  const [html, setHtml] = useState('');
+  const { colors } = useTheme();
+
+  const win = Dimensions.get('window')
+
+  useEffect(() => {
+    const tradingViewHtml = getTradingView(colors.gray[900]);
+    setHtml(tradingViewHtml)
+  }, [])
+
   return (
-    <Center flex={1}>
-      <Text color="white">TradeChart</Text>
-    </Center>
+    <VStack flex={1}>
+      <Header title="Chart Trading" />
+
+      <WebView
+        style={{ flex: 1, backgroundColor: colors.gray[900] }}
+        originWhitelist={['*']}
+        source={{ html }}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+      />
+    </VStack>
   );
 };

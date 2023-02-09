@@ -1,10 +1,11 @@
-import { Center, Text } from "native-base";
+import { Header } from "@components/Header";
+import { VStack } from "native-base";
 
 
 export function Feed() {
   return (
-    <Center flex={1}>
-      <Text color="white">Feed</Text>
-    </Center>
+    <VStack flex={1}>
+      <Header title="Feed" />
+    </VStack>
   );
 };
