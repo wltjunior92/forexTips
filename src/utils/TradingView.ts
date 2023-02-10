@@ -47,7 +47,7 @@ export function getTradingView(bgColor: string) {
             "width": "100vw",
             "height": "100%",
             "symbol": "FX:EURUSD",
-            "interval": "D",
+            "interval": "5",
             "timezone": "Etc/UTC",
             "theme": "dark",
             "style": "1",

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Dimensions } from 'react-native';
 import { useTheme, VStack } from 'native-base';
 import { WebView } from 'react-native-webview';
 
@@ -9,8 +8,6 @@ import { Header } from '@components/Header';
 export function TradeChart() {
   const [html, setHtml] = useState('');
   const { colors } = useTheme();
-
-  const win = Dimensions.get('window')
 
   useEffect(() => {
     const tradingViewHtml = getTradingView(colors.gray[900]);
