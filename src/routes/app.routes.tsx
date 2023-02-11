@@ -13,6 +13,7 @@ import BookSvg from '@assets/book.svg';
 import SignalsSvg from '@assets/signals.svg';
 import ChartSvg from '@assets/chart.svg';
 import ToolsSvg from '@assets/tools.svg';
+import { Calculator } from '@screens/Calculator';
 
 type AppRoutes = {
   feed: undefined;
@@ -20,6 +21,7 @@ type AppRoutes = {
   home: undefined;
   tradeChart: undefined;
   tools: undefined;
+  calculator: undefined;
 }
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
@@ -114,6 +116,14 @@ export function AppRoutes() {
               height={iconSize}
             />
           )
+        }}
+      />
+
+      <Screen
+        name="calculator"
+        component={Calculator}
+        options={{
+          tabBarButton: () => null,
         }}
       />
     </Navigator>

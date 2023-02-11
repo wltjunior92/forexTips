@@ -1,23 +1,69 @@
-import { Input as NativeBaseInput, IInputProps } from 'native-base';
+import { Text, VStack, Input as NativeBaseInput, IInputProps, HStack, Box, Icon } from 'native-base';
+import { TouchableOpacity } from 'react-native';
 
-export function Input({ ...rest }: IInputProps) {
+import { MaterialIcons } from '@expo/vector-icons';
+
+type Props = IInputProps & {
+  bg?: string;
+  label?: string;
+  handlePress?: () => void;
+};
+
+export function Input({ label, bg = 'gray.700', handlePress, ...rest }: Props) {
   return (
-    <NativeBaseInput
-      bgColor="gray.700"
-      h={14}
-      px={4}
-      borderWidth={0}
-      fontSize="md"
-      color="white"
-      fontFamily="body"
-      mb={4}
-      placeholderTextColor="gray.300"
-      _focus={{
-        bg: 'gray.700',
-        borderWidth: 1,
-        borderColor: 'yellow.500',
-      }}
-      {...rest}
-    />
+    <VStack
+      width="100%"
+    >
+      {!!label &&
+        <Text
+          color="gray.200"
+          fontSize="xs"
+          mb={2}
+        >
+          {label}
+        </Text>
+      }
+
+      <Box
+        flexDirection="row"
+        justifyContent="center"
+        alignItems="center"
+        mb={4}
+        h={14}
+        borderRadius={6}
+        bgColor={bg}
+      >
+        <NativeBaseInput
+          flex={1}
+          bgColor={bg}
+          px={4}
+          h={14}
+          borderWidth={0}
+          fontSize="md"
+          color="white"
+          fontFamily="body"
+          placeholderTextColor="gray.300"
+          _focus={{
+            bg: 'gray.700',
+            borderWidth: 1,
+            borderColor: 'yellow.500',
+          }}
+          {...rest}
+        />
+        {!!handlePress &&
+          <TouchableOpacity
+            onPress={handlePress}
+          >
+            <Icon
+              as={MaterialIcons}
+              name="content-copy"
+              color="gray.300"
+              size={6}
+              mx={2}
+            />
+          </TouchableOpacity>
+        }
+      </Box>
+    </VStack>
   );
 };

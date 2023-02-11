@@ -17,6 +17,9 @@ export function Button({ title, variant = 'solid', ...rest }: Props) {
       _pressed={{
         bg: variant === 'outline' ? 'gray.500' : 'yellow.800'
       }}
+      _disabled={{
+        bg: 'yellow.500',
+      }}
       {...rest}
     >
       <Text
