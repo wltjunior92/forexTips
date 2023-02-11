@@ -1,5 +1,5 @@
-import { Text, VStack, Input as NativeBaseInput, IInputProps, HStack, Box, Icon } from 'native-base';
-import { TouchableOpacity } from 'react-native';
+import { Text, VStack, Input as NativeBaseInput, IInputProps, Box, Icon } from 'native-base';
+import { TouchableOpacity, TextInput } from 'react-native';
 
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -7,9 +7,10 @@ type Props = IInputProps & {
   bg?: string;
   label?: string;
   handlePress?: () => void;
+  inputRef?: React.RefObject<TextInput>;
 };
 
-export function Input({ label, bg = 'gray.700', handlePress, ...rest }: Props) {
+export function Input({ label, bg = 'gray.700', handlePress, inputRef, ...rest }: Props) {
   return (
     <VStack
       width="100%"
@@ -34,6 +35,7 @@ export function Input({ label, bg = 'gray.700', handlePress, ...rest }: Props) {
         bgColor={bg}
       >
         <NativeBaseInput
+          ref={inputRef}
           flex={1}
           bgColor={bg}
           px={4}

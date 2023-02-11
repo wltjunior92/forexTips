@@ -1,11 +1,16 @@
+import { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { VStack, Image, Text, Center, Heading, ScrollView } from 'native-base';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
 
 import LogoSvg from '@assets/logo.svg';
 import BackgroundImg from '@assets/background.png';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes';
+import { GoogleAuthButton } from '@components/GoogleAuthButton';
+import { Alert } from 'react-native';
 
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
@@ -13,6 +18,29 @@ export function SignIn() {
   function handleNewAccount() {
     navigation.navigate('signUp');
   }
+
+  async function handleGoogleSignIn() {
+    try {
+      const haveGooglePlay = await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      if (!haveGooglePlay)
+        return Alert.alert('Google Auth', 'O dispositivo não possui os requisitos para usar esse recurso.')
+
+      const { idToken } = await GoogleSignin.signIn();
+
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+      const result = await auth().signInWithCredential(googleCredential);
+      console.log(result)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: '227222959991-his5imtoipqb172gbvef4enijeje1uqf.apps.googleusercontent.com',
+    });
+  }, []);
 
   return (
     <ScrollView
@@ -36,36 +64,21 @@ export function SignIn() {
           </Text>
         </Center>
 
-        <Center>
+        <Center mt={64}>
           <Heading color="gray.100" fontSize="xl" mb={6} fontFamily="heading">
             Acesse sua conta
           </Heading>
 
-          <Input
-            placeholder="E-mail"
-            keyboardType="email-address"
-            autoCapitalize="none"
+          <GoogleAuthButton
+            title="Acessar com o Google"
+            mb={4}
+            onPress={handleGoogleSignIn}
           />
-
-          <Input
-            placeholder="Senha"
-            secureTextEntry
-          />
-
-          <Button title="Acessar" />
         </Center>
 
-        <Center mt={24}>
-          <Text
-            color="gray.100"
-            fontSize="sm"
-            mb={3}
-            fontFamily="body"
-          >
-            Ainda não tem acesso?
-          </Text>
+        <Center mt={16}>
           <Button
-            title="Criar conta"
+            title="Acessar conta com e-mail e senha"
             variant="outline"
             onPress={handleNewAccount}
           />
