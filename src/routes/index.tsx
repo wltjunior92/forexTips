@@ -5,24 +5,14 @@ import auth from '@react-native-firebase/auth'
 
 import { AuthRoutes } from "./auth.routes";
 import { AppRoutes } from './app.routes';
-
-type User = {
-  uid: string;
-}
+import { useAuth } from '@hooks/useAuth';
 
 export function Routes() {
-  const [user, setUser] = useState<User | null>(null);
+  const { user } = useAuth();
   const { colors } = useTheme();
   const theme = DefaultTheme;
   theme.colors.background = colors.gray[700]
 
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(userInfo => {
-      setUser(userInfo);
-    });
-
-    return subscriber;
-  }, []);
   return (
     <Box flex={1} bg="gray.700">
       <NavigationContainer theme={theme}>

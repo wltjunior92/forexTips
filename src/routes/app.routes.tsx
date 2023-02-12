@@ -50,6 +50,10 @@ export function AppRoutes() {
           height: Platform.OS === 'android' ? 'auto' : 96,
           paddingBottom: sizes[10],
           paddingTop: sizes[6],
+        },
+        tabBarIconStyle: {
+          flex: 1,
+          backgroundColor: 'red',
         }
       }} >
       <Screen

@@ -13,16 +13,18 @@ import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 
 import DefaultAvatarImg from '@assets/userPhotoDefault.png';
+import { useAuth } from "@hooks/useAuth";
 
 const PHOTO_SIZE = 33;
 
 export function UserSettings() {
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
   const [userPhoto, setUserPhoto] = useState<string | null | undefined>('https://github.com/wltjunior92.png');
 
   const [displayName, setDisplayName] = useState<string | null | undefined>('');
   const [email, setEmail] = useState<string | null | undefined>('');
+
+  const { user, setUserContext } = useAuth();
 
   const toast = useToast();
 
@@ -75,26 +77,28 @@ export function UserSettings() {
   }
 
   async function uploadNewUserAvatar(fileUri: string) {
-    const fileName = `${user?.uid}-avatar`;
-    const reference = storage().ref(`/avatars/${fileName}.png`);
+    try {
+      const fileName = `${user?.uid}-avatar`;
+      const reference = storage().ref(`/avatars/${fileName}.png`);
 
-    await reference.putFile(fileUri);
-    const url = await reference.getDownloadURL();
-    console.log(url);
+      await reference.putFile(fileUri);
+      const url = await reference.getDownloadURL();
 
-    await user?.updateProfile({
-      photoURL: url,
-    })
+      await user?.updateProfile({
+        photoURL: url,
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useFocusEffect(useCallback(() => {
-    const userLoaded = auth().currentUser;
+    const loadedUser = auth().currentUser;
+    setDisplayName(loadedUser?.displayName);
+    setEmail(loadedUser?.email);
+    setUserPhoto(loadedUser?.photoURL);
 
-    setDisplayName(userLoaded?.displayName);
-    setEmail(userLoaded?.email);
-    setUserPhoto(userLoaded?.photoURL);
-
-    setUser(userLoaded);
+    setUserContext(loadedUser);
   }, []))
 
   return (

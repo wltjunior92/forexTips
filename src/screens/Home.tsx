@@ -9,9 +9,12 @@ import { Header } from "@components/Header";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { ISignal } from "src/interfaces/ISignal";
+import { useAuth } from "@hooks/useAuth";
 
 export function Home() {
   const [signals, setSignals] = useState<ISignal[]>([]);
+
+  const { user } = useAuth();
 
   const navigator = useNavigation<AppNavigatorRoutesProps>()
 
@@ -39,23 +42,25 @@ export function Home() {
     <VStack flex={1} >
       <Header title="Home" />
 
-      <Box
-        w="100%"
-        mb={4}
-        px={4}
-        alignItems="flex-end"
-      >
-        <TouchableOpacity
-          onPress={handleAddSignalPress}
+      {user?.email === 'wlt.junior92@gmail.com' &&
+        <Box
+          w="100%"
+          mb={4}
+          px={4}
+          alignItems="flex-end"
         >
-          <Icon
-            as={MaterialIcons}
-            name="add"
-            color="gray.200"
-            size={7}
-          />
-        </TouchableOpacity>
-      </Box>
+          <TouchableOpacity
+            onPress={handleAddSignalPress}
+          >
+            <Icon
+              as={MaterialIcons}
+              name="add"
+              color="gray.200"
+              size={7}
+            />
+          </TouchableOpacity>
+        </Box>
+      }
 
       <FlatList
         data={signals}

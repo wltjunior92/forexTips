@@ -9,6 +9,7 @@ import { Button } from '@components/Button';
 
 import LogoSvg from '@assets/logo.svg';
 import BackgroundImg from '@assets/background.png';
+import { useAuth } from '@hooks/useAuth';
 
 export function SignUp() {
   const [isNewUser, setIsNewUser] = useState(false);
@@ -22,6 +23,8 @@ export function SignUp() {
 
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const passwordConfirmationInputRef = useRef<TextInput>(null);
+
+  const { setUserContext } = useAuth();
 
   const navigation = useNavigation();
 
@@ -69,7 +72,9 @@ export function SignUp() {
   async function handleSigninWithEmailAndPassword() {
     auth()
       .signInWithEmailAndPassword(email, password)
-      .then(() => {})
+      .then(result => {
+        setUserContext(result.user);
+      })
       .catch(error => {
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
           return Alert.alert('Login', 'Usuário não encontrado! E-mail e/ou senha errados.')
