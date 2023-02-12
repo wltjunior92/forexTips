@@ -50,6 +50,9 @@ export function Input({ label, bg = 'gray.700', handlePress, inputRef, ...rest }
             borderWidth: 1,
             borderColor: 'yellow.500',
           }}
+          _readOnly={{
+            color: 'gray.300'
+          }}
           {...rest}
         />
         {!!handlePress &&

@@ -47,6 +47,7 @@ export function Header({ title, showBackButton = false, from }: Props) {
       pt={16}
       maxH={130}
       px={6}
+      bg="gray.700"
       {...(showBackButton && { justifyContent: 'space-between' })}
     >
       {showBackButton &&
