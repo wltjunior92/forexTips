@@ -44,7 +44,7 @@ export function Calculator() {
       <VStack
         flex={1}
       >
-        <Header title="Calculadora" showBackButton />
+        <Header title="Calculadora" showBackButton from="tools" />
 
         <VStack
           flex={1}

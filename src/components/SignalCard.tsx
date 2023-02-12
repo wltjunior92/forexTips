@@ -6,19 +6,11 @@ import BearImg from '@assets/bear.png';
 
 import TrendUpSvg from '@assets/trendUp.svg';
 import TrendDownSvg from '@assets/trendDown.svg';
+import { ISignal } from 'src/interfaces/ISignal';
 
-export type SignalCardProps = {
-  type: 'buy' | 'sell';
-  pair: string;
-  limit: number;
-  take1: number;
-  take2: number;
-  stopLoss: number;
-  result?: number;
-  expired: boolean;
-}
+export type SignalCardProps = ISignal;
 
-export function SignalCard({ type, pair, limit, take1, take2, stopLoss, result, expired }: SignalCardProps) {
+export function SignalCard({ side, symbol, limit, take1, take2, take3, stopLoss, result, expired }: SignalCardProps) {
   const { colors, sizes } = useTheme();
 
   const win = Dimensions.get('window')
@@ -34,8 +26,8 @@ export function SignalCard({ type, pair, limit, take1, take2, stopLoss, result, 
       overflow="hidden"
     >
       <Image
-        source={type === 'buy' ? BullImg : BearImg}
-        alt={type === 'buy' ? 'Touro representando Bull Market' : 'Urso representando Bear Market'}
+        source={side === 'buy' ? BullImg : BearImg}
+        alt={side === 'buy' ? 'Touro representando Bull Market' : 'Urso representando Bear Market'}
         resizeMode="contain"
         position="absolute"
         h={40}
@@ -49,9 +41,9 @@ export function SignalCard({ type, pair, limit, take1, take2, stopLoss, result, 
             fontSize="md"
             mr={2}
           >
-            {pair}
+            {symbol}
           </Heading>
-          {type === 'buy' ?
+          {side === 'buy' ?
             <TrendUpSvg
               stroke={colors.green[700]}
               strokeWidth='20'
@@ -91,7 +83,7 @@ export function SignalCard({ type, pair, limit, take1, take2, stopLoss, result, 
             color={expired ? 'gray.300' : "white"}
             fontSize="xs"
           >
-            {type === 'buy' ? 'BUY STOP' : 'SELL LIMIT'}
+            {side === 'buy' ? 'BUY STOP' : 'SELL LIMIT'}
           </Text>
           <Text
             color={expired ? 'gray.300' : "white"}
@@ -116,20 +108,38 @@ export function SignalCard({ type, pair, limit, take1, take2, stopLoss, result, 
           </Text>
         </VStack>
 
-        <VStack alignItems="center">
-          <Text
-            color={expired ? 'gray.300' : "white"}
-            fontSize="xs"
-          >
-            TAKE 2
-          </Text>
-          <Text
-            color={expired ? 'gray.300' : "white"}
-            fontWeight="bold"
-          >
-            {take2}
-          </Text>
-        </VStack>
+        {!!take2 &&
+          <VStack alignItems="center">
+            <Text
+              color={expired ? 'gray.300' : "white"}
+              fontSize="xs"
+            >
+              TAKE 2
+            </Text>
+            <Text
+              color={expired ? 'gray.300' : "white"}
+              fontWeight="bold"
+            >
+              {take2}
+            </Text>
+          </VStack>
+        }
+        {!!take3 &&
+          <VStack alignItems="center">
+            <Text
+              color={expired ? 'gray.300' : "white"}
+              fontSize="xs"
+            >
+              TAKE 3
+            </Text>
+            <Text
+              color={expired ? 'gray.300' : "white"}
+              fontWeight="bold"
+            >
+              {take3}
+            </Text>
+          </VStack>
+        }
 
         <VStack alignItems="center">
           <Text

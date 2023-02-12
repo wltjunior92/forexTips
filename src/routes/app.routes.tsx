@@ -14,6 +14,8 @@ import SignalsSvg from '@assets/signals.svg';
 import ChartSvg from '@assets/chart.svg';
 import ToolsSvg from '@assets/tools.svg';
 import { Calculator } from '@screens/Calculator';
+import { AddSignal } from '@screens/AddSignal';
+import { UserSettings } from '@screens/UserSettings';
 
 type AppRoutes = {
   feed: undefined;
@@ -22,6 +24,8 @@ type AppRoutes = {
   tradeChart: undefined;
   tools: undefined;
   calculator: undefined;
+  addSignal: undefined;
+  userSettings: undefined;
 }
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
@@ -122,6 +126,22 @@ export function AppRoutes() {
       <Screen
         name="calculator"
         component={Calculator}
+        options={{
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Screen
+        name="addSignal"
+        component={AddSignal}
+        options={{
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Screen
+        name="userSettings"
+        component={UserSettings}
         options={{
           tabBarButton: () => null,
         }}

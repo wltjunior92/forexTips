@@ -1,5 +1,6 @@
-import { TouchableOpacity } from "react-native";
+import { Alert, TouchableOpacity } from "react-native";
 import { HStack, Heading, Icon } from "native-base";
+import auth from '@react-native-firebase/auth';
 
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
@@ -8,14 +9,38 @@ import { AppNavigatorRoutesProps } from "@routes/app.routes";
 type Props = {
   title?: string
   showBackButton?: boolean;
+  from?: any;
 }
 
-export function Header({ title, showBackButton = false }: Props) {
+export function Header({ title, showBackButton = false, from }: Props) {
   const navigator = useNavigation<AppNavigatorRoutesProps>();
 
   function handleGoBack() {
-    navigator.navigate('tools');
+    navigator.navigate(from);
   }
+
+  function handleUserSettingsPress() {
+    navigator.navigate('userSettings')
+  }
+
+  async function handleSignOut() {
+    Alert.alert(
+      'LogOut',
+      'Deseja realmente fazer logout?',
+      [
+        {
+          text: 'Não',
+          style: 'cancel',
+        },
+        {
+          text: 'Sim',
+          onPress: async () => await auth().signOut(),
+        },
+      ]
+    )
+
+  }
+
   return (
     <HStack
       flex={1}
@@ -45,10 +70,12 @@ export function Header({ title, showBackButton = false }: Props) {
         {!!title ? title : ' '}
       </Heading>
 
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={title === 'Usuário' ? handleSignOut : handleUserSettingsPress}
+      >
         <Icon
           as={MaterialIcons}
-          name="person"
+          name={title === 'Usuário' ? 'logout' : 'person'}
           color="gray.200"
           size={7}
         />
