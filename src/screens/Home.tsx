@@ -10,6 +10,7 @@ import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { ISignal } from "src/interfaces/ISignal";
 import { useAuth } from "@hooks/useAuth";
+import { ListEmpty } from "@components/ListEmpty";
 
 export function Home() {
   const [signals, setSignals] = useState<ISignal[]>([]);
@@ -77,6 +78,11 @@ export function Home() {
             stopLoss={item.stopLoss}
             result={item.result}
             expired={item.expired}
+          />
+        )}
+        ListEmptyComponent={() => (
+          <ListEmpty
+            message="Nenhum sinal ainda"
           />
         )}
         flex={1}

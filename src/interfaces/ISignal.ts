@@ -9,4 +9,5 @@ export interface ISignal {
   stopLoss: number;
   result?: number;
   expired: boolean;
+  createdAt?: string;
 }

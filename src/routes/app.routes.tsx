@@ -16,6 +16,7 @@ import ToolsSvg from '@assets/tools.svg';
 import { Calculator } from '@screens/Calculator';
 import { AddSignal } from '@screens/AddSignal';
 import { UserSettings } from '@screens/UserSettings';
+import { AddPost } from '@screens/AddPost';
 
 type AppRoutes = {
   feed: undefined;
@@ -26,6 +27,7 @@ type AppRoutes = {
   calculator: undefined;
   addSignal: undefined;
   userSettings: undefined;
+  addPost: undefined;
 }
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
@@ -146,6 +148,14 @@ export function AppRoutes() {
       <Screen
         name="userSettings"
         component={UserSettings}
+        options={{
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Screen
+        name="addPost"
+        component={AddPost}
         options={{
           tabBarButton: () => null,
         }}

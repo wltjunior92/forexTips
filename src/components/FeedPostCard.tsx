@@ -1,39 +1,27 @@
-import { useCallback, useState } from 'react';
-import { useWindowDimensions } from "react-native";
+// import { useCallback, useState } from 'react';
+// import { useWindowDimensions } from "react-native";
 
 import { Image, Text, VStack, useTheme, HStack, Center, Box } from "native-base";
-import YoutubeIframe from 'react-native-youtube-iframe';
-import * as ScreenOrientation from 'expo-screen-orientation';
+// import YoutubeIframe from 'react-native-youtube-iframe';
+// import * as ScreenOrientation from 'expo-screen-orientation';
 
-import { Loading } from './Loading';
+// import { Loading } from './Loading';
+import { IPost } from 'src/interfaces/IPost';
 
-type User = {
-  name: string;
-  avatar: string;
-}
+export function FeedPostCard({ userName, createdAt, message, videoUrl, imageUrl, userAvatarUrl }: IPost) {
+  // const [videoReady, setVideoReady] = useState(false)
 
-export type FeedPostProps = {
-  user: User;
-  createdAt: Date;
-  message?: string;
-  video?: string;
-  image?: string;
-}
+  // const { width } = useWindowDimensions();
 
-export function FeedPostCard({ user, createdAt, message, video, image }: FeedPostProps) {
-  const [videoReady, setVideoReady] = useState(false)
+  // const { colors } = useTheme();
 
-  const { width } = useWindowDimensions();
-
-  const { colors } = useTheme();
-
-  const onFullScreenChange = useCallback((isFullScreen: boolean) => {
-    if (isFullScreen) {
-      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-    } else {
-      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-    }
-  }, []);
+  // const onFullScreenChange = useCallback((isFullScreen: boolean) => {
+  //   if (isFullScreen) {
+  //     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+  //   } else {
+  //     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+  //   }
+  // }, []);
 
   return (
     <VStack
@@ -50,7 +38,7 @@ export function FeedPostCard({ user, createdAt, message, video, image }: FeedPos
           width={12}
           height={12}
           borderColor="gray.200"
-          source={{ uri: user.avatar }}
+          source={{ uri: userAvatarUrl }}
           alt="Avatar do usuário"
           mr={2}
         />
@@ -59,22 +47,20 @@ export function FeedPostCard({ user, createdAt, message, video, image }: FeedPos
             color="gray.100"
             fontSize="xs"
           >
-            {user.name}
+            {userName}
           </Text>
           <Text
             color="gray.300"
             fontSize="xs"
           >
-            {
-              createdAt.toLocaleDateString('pt-BR', { year: 'numeric' })
-            }
+            {createdAt}
           </Text>
 
         </VStack>
       </HStack>
 
       {!!message &&
-        <Center
+        <Box
           width="100%"
           my={2}
         >
@@ -84,10 +70,10 @@ export function FeedPostCard({ user, createdAt, message, video, image }: FeedPos
           >
             {message}
           </Text>
-        </Center>
+        </Box>
       }
 
-      {!!video &&
+      {/* {!!videoUrl &&
         <VStack
           height={180}
           width="100%"
@@ -96,26 +82,27 @@ export function FeedPostCard({ user, createdAt, message, video, image }: FeedPos
         >
           {!videoReady && <Loading bg={colors.gray[600]} />}
           <YoutubeIframe
-            videoId={video}
+            videoId={videoUrl.split('v=')[1]}
             height={videoReady ? 180 : 0}
             width={width - (16 * 4)}
             onReady={() => setVideoReady(true)}
             onFullScreenChange={onFullScreenChange}
           />
         </VStack>
-      }
+      } */}
 
-      {!!image &&
+      {!!imageUrl &&
         <Box
           flex={1}
           mt={4}
         >
           <Image
-            source={{ uri: image }}
+            source={{ uri: imageUrl }}
             alt="Imagem do post"
             flex={1}
             w="100%"
             h={350}
+            borderRadius={6}
           />
         </Box>
       }
