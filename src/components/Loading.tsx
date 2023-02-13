@@ -1,12 +1,12 @@
-import { Spinner, Center } from 'native-base';
+import { Spinner, Center, ICenterProps } from 'native-base';
 
-type Props = {
+type Props = ICenterProps & {
   bg?: string;
 }
 
-export function Loading({ bg = 'gray.700' }: Props) {
+export function Loading({ bg = 'gray.700', ...rest }: Props) {
   return (
-    <Center flex={1} bg={bg}>
+    <Center flex={1} bg={bg} {...rest}>
       <Spinner color="yellow.500" />
     </Center>
   );

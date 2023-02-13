@@ -60,7 +60,7 @@ export function SignIn() {
           <LogoSvg />
 
           <Text color="gray.100" fontSize="sm">
-            Treine sua mente e seu o corpo
+            Sinais Forex
           </Text>
         </Center>
 

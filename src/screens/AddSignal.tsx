@@ -12,7 +12,7 @@ import { AppNavigatorRoutesProps } from "@routes/app.routes";
 
 
 export function AddSignal() {
-  const [isDisabled, setIsDisabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [type, setType] = useState('');
   const [symbol, setSymbol] = useState('');
@@ -25,6 +25,7 @@ export function AddSignal() {
   const navigator = useNavigation<AppNavigatorRoutesProps>();
 
   async function handleAddSignal() {
+    setIsLoading(true)
     firestore()
       .collection('signals')
       .add({
@@ -41,7 +42,8 @@ export function AddSignal() {
         Alert.alert('Sinal enviado com sucesso');
         navigator.navigate('home');
       })
-      .catch(error => console.log(error));
+      .catch(error => console.log(error))
+      .finally(() => setIsLoading(false));
   }
 
   return (
@@ -109,6 +111,7 @@ export function AddSignal() {
           <Button
             title="Enviar sinal"
             onPress={handleAddSignal}
+            isLoading={isLoading}
           />
         </VStack>
       </VStack>

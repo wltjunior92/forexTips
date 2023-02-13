@@ -27,7 +27,7 @@ export function FeedPostCard({ userName, createdAt, message, videoUrl, imageUrl,
     <VStack
       bg="gray.600"
       p={4}
-      mx={4}
+      mx={6}
       mb={6}
       borderRadius={8}
     >

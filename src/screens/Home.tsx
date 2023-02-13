@@ -11,11 +11,12 @@ import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { ISignal } from "src/interfaces/ISignal";
 import { useAuth } from "@hooks/useAuth";
 import { ListEmpty } from "@components/ListEmpty";
+import { ScreenActions } from "@components/ScreenActions";
 
 export function Home() {
   const [signals, setSignals] = useState<ISignal[]>([]);
 
-  const { user } = useAuth();
+  const { isAdmin } = useAuth();
 
   const navigator = useNavigation<AppNavigatorRoutesProps>()
 
@@ -24,9 +25,14 @@ export function Home() {
   };
 
   useEffect(() => {
+    const currentDay = new Date();
+    const dayBefore = new Date(new Date().setDate(currentDay.getDate() - 1));
+
+    const startDate = firestore.Timestamp.fromDate(dayBefore)
     const subscribe = firestore()
       .collection('signals')
       .orderBy('createdAt', 'desc')
+      .where('createdAt', '>', startDate)
       .onSnapshot(querySnapshot => {
         const data = querySnapshot.docs.map(doc => ({
           id: doc.id,
@@ -43,25 +49,7 @@ export function Home() {
     <VStack flex={1} >
       <Header title="Home" />
 
-      {user?.email === 'wlt.junior92@gmail.com' &&
-        <Box
-          w="100%"
-          mb={4}
-          px={4}
-          alignItems="flex-end"
-        >
-          <TouchableOpacity
-            onPress={handleAddSignalPress}
-          >
-            <Icon
-              as={MaterialIcons}
-              name="add"
-              color="gray.200"
-              size={7}
-            />
-          </TouchableOpacity>
-        </Box>
-      }
+      <ScreenActions onActionPress={handleAddSignalPress} />
 
       <FlatList
         data={signals}

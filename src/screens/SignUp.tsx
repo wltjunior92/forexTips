@@ -8,6 +8,7 @@ import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 
 import LogoSvg from '@assets/logo.svg';
+import LogoPng from '@assets/logo.png';
 import BackgroundImg from '@assets/background.png';
 import { useAuth } from '@hooks/useAuth';
 
@@ -109,7 +110,7 @@ export function SignUp() {
           <LogoSvg />
 
           <Text color="gray.100" fontSize="sm">
-            Treine sua mente e seu o corpo
+            Sinais Forex
           </Text>
         </Center>
 
