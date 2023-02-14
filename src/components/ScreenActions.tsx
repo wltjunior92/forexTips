@@ -1,4 +1,5 @@
-import { Box, HStack, Icon, Text } from "native-base";
+import { ReactNode } from "react";
+import { HStack, Icon, Text } from "native-base";
 import { TouchableOpacity } from "react-native";
 
 import { MaterialIcons } from '@expo/vector-icons';
@@ -8,9 +9,10 @@ import { useAuth } from "@hooks/useAuth";
 type Props = {
   onActionPress: () => void;
   itensCount?: string;
+  component?: () => JSX.Element;
 }
 
-export function ScreenActions({ onActionPress, itensCount }: Props) {
+export function ScreenActions({ onActionPress, itensCount, component: Component }: Props) {
   const { isAdmin } = useAuth();
 
   return (
@@ -21,12 +23,18 @@ export function ScreenActions({ onActionPress, itensCount }: Props) {
       alignItems="center"
       justifyContent="center"
     >
-      <Text
-        flex={1}
-        color="gray.300"
-      >
-        {itensCount}
-      </Text>
+      {!!!Component &&
+        <Text
+          flex={1}
+          color="gray.300"
+        >
+          {itensCount}
+        </Text>
+      }
+
+      {!!Component &&
+        <Component />
+      }
 
       {isAdmin &&
         <TouchableOpacity

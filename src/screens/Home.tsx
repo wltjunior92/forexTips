@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Box, FlatList, Icon, VStack } from "native-base";
-import { TouchableOpacity } from "react-native";
-import { MaterialIcons } from '@expo/vector-icons';
+import { FlatList, VStack, Select, Box, Icon } from "native-base";
 import firestore from '@react-native-firebase/firestore';
 
-import { SignalCard, SignalCardProps } from "@components/SignalCard";
+import { MaterialIcons } from '@expo/vector-icons';
+
+import { SignalCard } from "@components/SignalCard";
 import { Header } from "@components/Header";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
@@ -12,9 +12,14 @@ import { ISignal } from "src/interfaces/ISignal";
 import { useAuth } from "@hooks/useAuth";
 import { ListEmpty } from "@components/ListEmpty";
 import { ScreenActions } from "@components/ScreenActions";
+import { EditSignalModal } from "@components/EditSignalModal";
+
 
 export function Home() {
   const [signals, setSignals] = useState<ISignal[]>([]);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedSignal, setSelectedSignal] = useState<ISignal | null>(null);
+  const [daysToSearch, setDaysToSearch] = useState('1');
 
   const { isAdmin } = useAuth();
 
@@ -24,9 +29,20 @@ export function Home() {
     navigator.navigate('addSignal');
   };
 
+  function handleOpenEditModal(signal: ISignal) {
+    setShowEditModal(true);
+    setSelectedSignal(signal)
+  }
+
+  function handleCloseEditModal() {
+    setShowEditModal(false);
+    setSelectedSignal(null)
+  }
+
+
   useEffect(() => {
     const currentDay = new Date();
-    const dayBefore = new Date(new Date().setDate(currentDay.getDate() - 1));
+    const dayBefore = new Date(new Date().setDate(currentDay.getDate() - parseInt(daysToSearch)));
 
     const startDate = firestore.Timestamp.fromDate(dayBefore)
     const subscribe = firestore()
@@ -39,17 +55,56 @@ export function Home() {
           ...doc.data(),
         })) as ISignal[];
 
-        setSignals(data);
+        const sortByStatus = data.sort(signal => {
+          if (signal.status === 'ativo')
+            return -1;
+          return 1
+
+        })
+
+        setSignals(sortByStatus);
       });
 
     return () => subscribe();
-  }, []);
+  }, [daysToSearch]);
 
   return (
     <VStack flex={1} >
       <Header title="Home" />
 
-      <ScreenActions onActionPress={handleAddSignalPress} />
+      <ScreenActions
+        component={() => (
+          <Box
+            flex={1}
+            alignItems="flex-start"
+          >
+            <Select
+              size="sm"
+              defaultValue={daysToSearch}
+              width={24}
+              bg="gray.800"
+              borderWidth={0}
+              height={10}
+              color="gray.100"
+              onValueChange={setDaysToSearch}
+              dropdownIcon={
+                <Icon
+                  as={MaterialIcons}
+                  name="arrow-drop-down"
+                  color="gray.200"
+                  size={5}
+                />
+              }
+            >
+              <Select.Item label="1 dia" value="1" />
+              <Select.Item label="3 dia" value="3" />
+              <Select.Item label="5 dia" value="5" />
+              <Select.Item label="10 dia" value="10" />
+            </Select>
+          </Box>
+        )}
+        onActionPress={handleAddSignalPress}
+      />
 
       <FlatList
         data={signals}
@@ -65,7 +120,8 @@ export function Home() {
             take3={item.take3}
             stopLoss={item.stopLoss}
             result={item.result}
-            expired={item.expired}
+            status={item.status}
+            onEditClick={() => handleOpenEditModal(item)}
           />
         )}
         ListEmptyComponent={() => (
@@ -77,6 +133,14 @@ export function Home() {
         showsVerticalScrollIndicator={false}
         px={6}
       />
+
+      {isAdmin &&
+        <EditSignalModal
+          isOpen={showEditModal}
+          onClose={handleCloseEditModal}
+          selectedSignal={selectedSignal}
+        />
+      }
     </VStack>
   );
 };

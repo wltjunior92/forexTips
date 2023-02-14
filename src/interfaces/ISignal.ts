@@ -2,12 +2,12 @@ export interface ISignal {
   id: string;
   side: 'buy' | 'sell';
   symbol: string;
-  limit: number;
-  take1: number;
-  take2?: number;
-  take3?: number;
-  stopLoss: number;
-  result?: number;
-  expired: boolean;
+  limit: string;
+  take1: string;
+  take2?: string;
+  take3?: string;
+  stopLoss: string;
+  result?: string;
+  status: 'ativo' | 'expirado' | 'cancelado';
   createdAt?: string;
 }
