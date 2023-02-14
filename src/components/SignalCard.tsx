@@ -40,8 +40,8 @@ export function SignalCard({ side, symbol, limit, take1, take2, take3, stopLoss,
         width={win.width - 40}
       />
 
-      <HStack justifyContent="space-between">
-        <HStack>
+      <HStack width="100%">
+        <HStack flex={1}>
           <Heading
             color={status !== 'ativo' ? 'gray.300' : "white"}
             fontSize="md"
@@ -89,6 +89,7 @@ export function SignalCard({ side, symbol, limit, take1, take2, take3, stopLoss,
         {isAdmin &&
           <TouchableOpacity
             onPress={onEditClick}
+            style={{ marginLeft: 8 }}
           >
             <Icon
               as={MaterialIcons}

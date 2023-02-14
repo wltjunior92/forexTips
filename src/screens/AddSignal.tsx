@@ -31,6 +31,7 @@ export function AddSignal() {
       .add({
         side: type,
         symbol,
+        status: 'ativo',
         limit,
         take1,
         take2,
@@ -74,6 +75,8 @@ export function AddSignal() {
             label="Symbol"
             placeholder="ex.: GBPUSD"
             autoCapitalize="characters"
+            autoCorrect={false}
+            autoComplete="off"
             bg="gray.800"
             onChangeText={setSymbol}
           />
