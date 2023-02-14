@@ -22,11 +22,6 @@ export function Tools() {
           title="Calculadora"
           mb={4}
           onPress={handleCalculatorPress}
-
-        />
-        <Button
-          title="Teste"
-          mb={4}
         />
       </VStack>
     </VStack>

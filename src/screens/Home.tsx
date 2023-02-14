@@ -13,10 +13,12 @@ import { useAuth } from "@hooks/useAuth";
 import { ListEmpty } from "@components/ListEmpty";
 import { ScreenActions } from "@components/ScreenActions";
 import { EditSignalModal } from "@components/EditSignalModal";
+import { Loading } from "@components/Loading";
 
 
 export function Home() {
   const [signals, setSignals] = useState<ISignal[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedSignal, setSelectedSignal] = useState<ISignal | null>(null);
   const [daysToSearch, setDaysToSearch] = useState('1');
@@ -41,31 +43,38 @@ export function Home() {
 
 
   useEffect(() => {
-    const currentDay = new Date();
-    const dayBefore = new Date(new Date().setDate(currentDay.getDate() - parseInt(daysToSearch)));
+    setIsLoading(true);
+    try {
+      const currentDay = new Date();
+      const dayBefore = new Date(new Date().setDate(currentDay.getDate() - parseInt(daysToSearch)));
 
-    const startDate = firestore.Timestamp.fromDate(dayBefore)
-    const subscribe = firestore()
-      .collection('signals')
-      .orderBy('createdAt', 'desc')
-      .where('createdAt', '>', startDate)
-      .onSnapshot(querySnapshot => {
-        const data = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as ISignal[];
+      const startDate = firestore.Timestamp.fromDate(dayBefore)
+      const subscribe = firestore()
+        .collection('signals')
+        .orderBy('createdAt', 'asc')
+        .where('createdAt', '>', startDate)
+        .onSnapshot(querySnapshot => {
+          const data = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          })) as ISignal[];
 
-        const sortByStatus = data.sort(signal => {
-          if (signal.status === 'ativo')
-            return -1;
-          return 1
+          const sortByStatus = data.sort(signal => {
+            if (signal.status === 'ativo')
+              return -1;
+            return 1
 
-        })
+          })
 
-        setSignals(sortByStatus);
-      });
+          setSignals(sortByStatus);
+        });
 
-    return () => subscribe();
+      return () => subscribe();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   }, [daysToSearch]);
 
   return (
@@ -106,33 +115,38 @@ export function Home() {
         onActionPress={handleAddSignalPress}
       />
 
-      <FlatList
-        data={signals}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <SignalCard
-            id={item.id}
-            side={item.side}
-            symbol={item.symbol}
-            limit={item.limit}
-            take1={item.take1}
-            take2={item.take2}
-            take3={item.take3}
-            stopLoss={item.stopLoss}
-            result={item.result}
-            status={item.status}
-            onEditClick={() => handleOpenEditModal(item)}
+      {
+        isLoading ?
+          <Loading flex={1} /> :
+          <FlatList
+            data={signals}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <SignalCard
+                id={item.id}
+                side={item.side}
+                symbol={item.symbol}
+                limit={item.limit}
+                take1={item.take1}
+                take2={item.take2}
+                take3={item.take3}
+                stopLoss={item.stopLoss}
+                result={item.result}
+                status={item.status}
+                onEditClick={() => handleOpenEditModal(item)}
+              />
+            )}
+            ListEmptyComponent={() => (
+              <ListEmpty
+                message="Nenhum sinal ainda"
+              />
+            )}
+            flex={1}
+            showsVerticalScrollIndicator={false}
+            px={6}
+            contentContainerStyle={{ paddingBottom: 36 }}
           />
-        )}
-        ListEmptyComponent={() => (
-          <ListEmpty
-            message="Nenhum sinal ainda"
-          />
-        )}
-        flex={1}
-        showsVerticalScrollIndicator={false}
-        px={6}
-      />
+      }
 
       {isAdmin &&
         <EditSignalModal

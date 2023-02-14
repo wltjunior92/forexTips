@@ -5,6 +5,7 @@ import firestore from '@react-native-firebase/firestore';
 import TrendUpSvg from '@assets/trendUp.svg';
 import TrendDownSvg from '@assets/trendDown.svg';
 import { useState } from "react";
+import { Alert } from "react-native";
 
 type Props = {
   selectedSignal: ISignal | null;
@@ -29,6 +30,32 @@ export function EditSignalModal({ selectedSignal, isOpen, onClose }: Props) {
 
     onClose();
   }
+
+  async function handleDeleteSignal() {
+    Alert.alert(
+      'Sinal',
+      'Deseja realmente excluir esse sinal?',
+      [
+        {
+          text: 'Não',
+          style: 'cancel',
+        },
+        {
+          text: 'Sim',
+          onPress: async () => {
+            firestore()
+              .collection('signals')
+              .doc(selectedSignal?.id)
+              .delete();
+
+            onClose();
+          },
+        },
+      ]
+    )
+
+  }
+
   return (
     <Modal
       isOpen={isOpen}
@@ -99,10 +126,13 @@ export function EditSignalModal({ selectedSignal, isOpen, onClose }: Props) {
         <Modal.Footer bg="gray.100">
           <Button.Group space={2}>
             <Button variant="ghost" colorScheme="blueGray" onPress={onClose}>
-              Cancel
+              Cancelar
+            </Button>
+            <Button colorScheme="danger" onPress={handleDeleteSignal}>
+              Excluir
             </Button>
             <Button onPress={handleSaveSignalEdition}>
-              Save
+              Salvar
             </Button>
           </Button.Group>
         </Modal.Footer>
