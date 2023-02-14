@@ -28,17 +28,24 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     const subscriber = auth().onAuthStateChanged(userInfo => {
       setUser(userInfo);
 
-      firestore()
-        .collection('users')
-        .where('userUid', '==', userInfo?.uid)
-        .limit(1)
-        .get()
-        .then(response => {
-          const [foundUser] = response.docs.map(doc => doc.data())
+      try {
+        if (userInfo?.uid) {
+          firestore()
+            .collection('users')
+            .where('userUid', '==', userInfo?.uid || '')
+            .limit(1)
+            .get()
+            .then(response => {
+              const [foundUser] = response.docs.map(doc => doc.data())
 
-          setIsAdmin(foundUser.isAdmin);
-          setValidSubscription(foundUser.validSubscriptiopn);
-        })
+              setIsAdmin(foundUser.isAdmin);
+              setValidSubscription(foundUser.validSubscriptiopn);
+            })
+            .catch(error => console.log(error))
+        }
+      } catch (error) {
+        console.log(error)
+      }
     });
 
     return subscriber;
