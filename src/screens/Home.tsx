@@ -14,6 +14,7 @@ import { ListEmpty } from "@components/ListEmpty";
 import { ScreenActions } from "@components/ScreenActions";
 import { EditSignalModal } from "@components/EditSignalModal";
 import { Loading } from "@components/Loading";
+import { tagUserStatus } from "@services/notificationsTags";
 
 
 export function Home() {
@@ -76,6 +77,10 @@ export function Home() {
       setIsLoading(false);
     }
   }, [daysToSearch]);
+
+  useEffect(() => {
+    tagUserStatus('user_logged_in')
+  }, []);
 
   return (
     <VStack flex={1} >

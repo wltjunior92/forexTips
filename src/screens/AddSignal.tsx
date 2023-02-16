@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, VStack, Select as NativeBaseSelect } from "native-base";
 import firestore from '@react-native-firebase/firestore';
+import OneSignal from 'react-native-onesignal';
 
 import { Header } from "@components/Header";
 import { Input } from "@components/Input";
@@ -9,12 +10,13 @@ import { Button } from "@components/Button";
 import { Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
+import { postNewSignalNotification } from "@services/notifications";
 
 
 export function AddSignal() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const [type, setType] = useState('');
+  const [type, setType] = useState<'buy' | 'sell' | ''>('');
   const [symbol, setSymbol] = useState('');
   const [limit, setLimit] = useState(0);
   const [take1, setTake1] = useState(0);
@@ -39,9 +41,13 @@ export function AddSignal() {
         stopLoss,
         createdAt: firestore.FieldValue.serverTimestamp(),
       })
-      .then(() => {
+      .then(async () => {
         Alert.alert('Sinal enviado com sucesso');
+
         navigator.navigate('home');
+
+
+        await postNewSignalNotification(symbol, limit, type);
       })
       .catch(error => console.log(error))
       .finally(() => setIsLoading(false));
@@ -66,7 +72,7 @@ export function AddSignal() {
             label="Tipo"
             bg="gray.800"
             placeholder="ex.: Compra"
-            onValueChange={itemValue => setType(itemValue)}
+            onValueChange={itemValue => setType(itemValue as 'buy' | 'sell' | '')}
           >
             <NativeBaseSelect.Item label="Compra" value="buy" />
             <NativeBaseSelect.Item label="Venda" value="sell" />

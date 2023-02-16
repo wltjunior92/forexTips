@@ -1,4 +1,5 @@
 import { StatusBar } from 'react-native';
+import OneSignal from 'react-native-onesignal';
 import { NativeBaseProvider } from 'native-base';
 import { useFonts, Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
 
@@ -7,6 +8,8 @@ import { Routes } from '@routes/index';
 
 import { theme } from './src/theme';
 import { AuthContextProvider } from '@contexts/AuthContext';
+
+OneSignal.setAppId('e5f5e4f7-17a3-461e-ad33-0a664663f045')
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold });
