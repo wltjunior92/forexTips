@@ -6,6 +6,7 @@ import TrendUpSvg from '@assets/trendUp.svg';
 import TrendDownSvg from '@assets/trendDown.svg';
 import { useState } from "react";
 import { Alert } from "react-native";
+import { postNewSignalNotification } from "@services/notifications";
 
 type Props = {
   selectedSignal: ISignal | null;
@@ -31,6 +32,25 @@ export function EditSignalModal({ selectedSignal, isOpen, onClose }: Props) {
     onClose();
   }
 
+  function handleResendNotifications() {
+    Alert.alert(
+      'Sinal',
+      'Deseja notificar os usuários novamente?',
+      [
+        {
+          text: 'Não',
+          style: 'cancel',
+        },
+        {
+          text: 'Sim',
+          onPress: async () => {
+            postNewSignalNotification(selectedSignal?.symbol || '', parseFloat(selectedSignal?.limit || ''), selectedSignal?.side || '')
+          },
+        },
+      ]
+    )
+  }
+
   async function handleDeleteSignal() {
     Alert.alert(
       'Sinal',
@@ -53,7 +73,6 @@ export function EditSignalModal({ selectedSignal, isOpen, onClose }: Props) {
         },
       ]
     )
-
   }
 
   return (
@@ -121,7 +140,9 @@ export function EditSignalModal({ selectedSignal, isOpen, onClose }: Props) {
             />
           </FormControl>
 
-
+          <Button colorScheme="blueGray" onPress={handleResendNotifications} mt={4}>
+            Reenviar notificação?
+          </Button>
         </Modal.Body>
         <Modal.Footer bg="gray.100">
           <Button.Group space={2}>

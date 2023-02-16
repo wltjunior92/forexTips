@@ -11,6 +11,7 @@ import { Button } from '@components/Button';
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes';
 import { GoogleAuthButton } from '@components/GoogleAuthButton';
 import { Alert } from 'react-native';
+import { tagUserStatus } from '@services/notificationsTags';
 
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
@@ -29,8 +30,7 @@ export function SignIn() {
 
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
-      const result = await auth().signInWithCredential(googleCredential);
-      console.log(result)
+      await auth().signInWithCredential(googleCredential);
     } catch (error) {
       console.log(error)
     }

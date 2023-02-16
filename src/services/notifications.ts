@@ -3,13 +3,10 @@ import axios from 'axios'
 export async function postNewSignalNotification(symbol: string, limit: number, side: 'buy' | 'sell' | '') {
   try {
     const body = {
-      included_segments: [
-        'Subscribed Users',
-        'filters: [ {"field": "tag", "key": "user_type", "relation": "=", "value": "active_subscription"} ]'
+      filters: [
+        { "field": "tag", "key": "active_subscription", "relation": "=", "value": "true" },
+        { "field": "tag", "key": "user_status", "relation": "=", "value": "user_logged_in" }
       ],
-      data: {
-        foo: 'bar',
-      },
       headings: { en: 'Novo sinal adicionado!' },
       contents: { en: `Temos um sinal de ${side === 'buy' ? 'compra' : 'venda'} para ${symbol} em ${limit}` },
       name: 'NEW_SIGNAL_ADDED',
@@ -24,13 +21,11 @@ export async function postNewSignalNotification(symbol: string, limit: number, s
         'content-type': 'application/json'
       },
     }).then((response: any) => {
-      console.log(JSON.stringify(response.data, null, 2));
-      return response.data;
+      // console.log(JSON.stringify(response.data, null, 2));
     }).catch((error: any) => {
       console.error(error);
     });
   } catch (error) {
-    console.log('teste');
     console.log(error)
   }
 }

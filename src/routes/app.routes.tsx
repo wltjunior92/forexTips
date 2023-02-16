@@ -1,6 +1,8 @@
+import { useCallback } from 'react';
 import { Platform } from 'react-native';
-import { useTheme } from 'native-base';
+import { useFocusEffect } from '@react-navigation/native';
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { useTheme } from 'native-base';
 
 import { Educational } from '@screens/Educational';
 import { Feed } from '@screens/Feed';
@@ -17,6 +19,7 @@ import { Calculator } from '@screens/Calculator';
 import { AddSignal } from '@screens/AddSignal';
 import { UserSettings } from '@screens/UserSettings';
 import { AddPost } from '@screens/AddPost';
+import { tagUserStatus } from '@services/notificationsTags';
 
 type AppRoutes = {
   feed: undefined;
@@ -38,6 +41,11 @@ export function AppRoutes() {
   const { sizes, colors } = useTheme();
 
   const iconSize = sizes[6];
+
+  useFocusEffect(useCallback(() => {
+    tagUserStatus('user_logged_in')
+  }, []));
+
   return (
     <Navigator
       initialRouteName='home'
