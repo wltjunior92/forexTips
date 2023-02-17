@@ -182,7 +182,7 @@ export function SignUp() {
         </Center>
 
         <Button
-          title="Voltar para o login"
+          title="Voltar"
           variant="outline"
           mt={20}
           onPress={handleGoBack}

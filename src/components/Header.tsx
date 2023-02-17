@@ -5,6 +5,7 @@ import auth from '@react-native-firebase/auth';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
+import { useAuth } from "@hooks/useAuth";
 
 type Props = {
   title?: string
@@ -13,6 +14,7 @@ type Props = {
 }
 
 export function Header({ title, showBackButton = false, from }: Props) {
+  const { resetIsAdmin } = useAuth();
   const navigator = useNavigation<AppNavigatorRoutesProps>();
 
   function handleGoBack() {
@@ -34,7 +36,10 @@ export function Header({ title, showBackButton = false, from }: Props) {
         },
         {
           text: 'Sim',
-          onPress: async () => await auth().signOut(),
+          onPress: async () => {
+            await auth().signOut();
+            resetIsAdmin();
+          },
         },
       ]
     )

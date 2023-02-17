@@ -5,6 +5,7 @@ import firestore from '@react-native-firebase/firestore';
 type AuthContextDataProps = {
   user: FirebaseAuthTypes.User | null;
   setUserContext: (user: FirebaseAuthTypes.User | null) => void;
+  resetIsAdmin: () => void;
   isAdmin: boolean;
   validSubscription: boolean;
   isLoadingApplication: boolean;
@@ -24,6 +25,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   function setUserContext(user: FirebaseAuthTypes.User | null) {
     setUser(user)
+  }
+
+  function resetIsAdmin() {
+    setIsAdmin(false);
   }
 
   async function monitorAuth() {
@@ -61,7 +66,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUserContext, isAdmin, validSubscription, isLoadingApplication }}>
+    <AuthContext.Provider value={{ user, setUserContext, isAdmin, validSubscription, isLoadingApplication, resetIsAdmin }}>
       {children}
     </AuthContext.Provider>
   )
