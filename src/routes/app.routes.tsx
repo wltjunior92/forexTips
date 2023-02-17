@@ -13,8 +13,10 @@ import { TradeChart } from '@screens/TradeChart';
 import HomeSvg from '@assets/home.svg';
 import BookSvg from '@assets/book.svg';
 import SignalsSvg from '@assets/signals.svg';
+import LogoSvg from '@assets/logoImg.svg';
 import ChartSvg from '@assets/chart.svg';
 import ToolsSvg from '@assets/tools.svg';
+
 import { Calculator } from '@screens/Calculator';
 import { AddSignal } from '@screens/AddSignal';
 import { UserSettings } from '@screens/UserSettings';
@@ -99,11 +101,11 @@ export function AppRoutes() {
         component={Home}
         options={{
           tabBarIcon: ({ color }) => (
-            <SignalsSvg
+            <LogoSvg
               stroke={color}
               strokeWidth='20'
-              width={iconSize}
-              height={iconSize}
+              width={iconSize + 6}
+              height={iconSize + 6}
             />
           )
         }}

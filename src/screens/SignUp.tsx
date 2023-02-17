@@ -11,6 +11,7 @@ import LogoSvg from '@assets/logo.svg';
 import LogoPng from '@assets/logo.png';
 import BackgroundImg from '@assets/background.png';
 import { useAuth } from '@hooks/useAuth';
+import { createNewUserRegister } from '@services/createUserRegister';
 
 export function SignUp() {
   const [isNewUser, setIsNewUser] = useState(false);
@@ -73,7 +74,10 @@ export function SignUp() {
   async function handleSigninWithEmailAndPassword() {
     auth()
       .signInWithEmailAndPassword(email, password)
-      .then(result => {
+      .then(async (result) => {
+        if (result.additionalUserInfo?.isNewUser) {
+          await createNewUserRegister(result.user.uid, result.user.displayName || '');
+        }
         setUserContext(result.user);
       })
       .catch(error => {
@@ -182,7 +186,7 @@ export function SignUp() {
         </Center>
 
         <Button
-          title="Voltar para o login"
+          title="Voltar"
           variant="outline"
           mt={20}
           onPress={handleGoBack}

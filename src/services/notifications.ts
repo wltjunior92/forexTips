@@ -1,10 +1,10 @@
 import axios from 'axios'
 
+// { "field": "tag", "key": "active_subscription", "relation": "=", "value": "true" },
 export async function postNewSignalNotification(symbol: string, limit: number, side: 'buy' | 'sell' | '') {
   try {
     const body = {
       filters: [
-        { "field": "tag", "key": "active_subscription", "relation": "=", "value": "true" },
         { "field": "tag", "key": "user_status", "relation": "=", "value": "user_logged_in" }
       ],
       headings: { en: 'Novo sinal adicionado!' },

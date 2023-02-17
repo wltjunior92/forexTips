@@ -6,15 +6,17 @@ import auth from '@react-native-firebase/auth';
 
 import LogoSvg from '@assets/logo.svg';
 import BackgroundImg from '@assets/background.png';
-import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes';
 import { GoogleAuthButton } from '@components/GoogleAuthButton';
 import { Alert } from 'react-native';
-import { tagUserStatus } from '@services/notificationsTags';
+import { useAuth } from '@hooks/useAuth';
+import { createNewUserRegister } from '@services/createUserRegister';
 
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
+
+  const { setUserContext } = useAuth();
 
   function handleNewAccount() {
     navigation.navigate('signUp');
@@ -30,7 +32,11 @@ export function SignIn() {
 
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
-      await auth().signInWithCredential(googleCredential);
+      const result = await auth().signInWithCredential(googleCredential);
+      if (result.additionalUserInfo?.isNewUser) {
+        await createNewUserRegister(result.user.uid, result.user.displayName || '');
+      }
+      setUserContext(result.user)
     } catch (error) {
       console.log(error)
     }
@@ -47,7 +53,7 @@ export function SignIn() {
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
-      <VStack flex={1} px={10} pb={16}>
+      <VStack flex={1} px={10}>
         <Image
           source={BackgroundImg}
           defaultSource={BackgroundImg}
