@@ -22,6 +22,7 @@ import { AddSignal } from '@screens/AddSignal';
 import { UserSettings } from '@screens/UserSettings';
 import { AddPost } from '@screens/AddPost';
 import { tagUserStatus } from '@services/notificationsTags';
+import { Subscription } from '@screens/Subscription';
 
 type AppRoutes = {
   feed: undefined;
@@ -33,6 +34,7 @@ type AppRoutes = {
   addSignal: undefined;
   userSettings: undefined;
   addPost: undefined;
+  subscription: undefined;
 }
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
@@ -173,6 +175,14 @@ export function AppRoutes() {
       <Screen
         name="addPost"
         component={AddPost}
+        options={{
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Screen
+        name="subscription"
+        component={Subscription}
         options={{
           tabBarButton: () => null,
         }}

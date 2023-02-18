@@ -24,7 +24,7 @@ export function Feed() {
   const [totalPosts, setTotalPosts] = useState(0);
 
   // Status de inscrição provisório
-  const [validSubscription, setValidSubscription] = useState(false);
+  const [validSubscription] = useState(true);
 
   const { isAdmin } = useAuth();
 
@@ -37,7 +37,7 @@ export function Feed() {
   }
 
   async function loadMorePosts() {
-    if (!validSubscription) return;
+    if (!validSubscription && !isAdmin) return;
     if (posts.length < totalPosts) {
       setIsLoading(true)
       firestore()
@@ -137,7 +137,7 @@ export function Feed() {
           )}
           ListEmptyComponent={() => (
             <ListEmpty
-              message="Nenhum post encontrado 🤔"
+              message={isLoading ? 'Carregando posts...' : 'Nenhum post encontrado 🤔'}
             />
           )}
           onEndReached={loadMorePosts}

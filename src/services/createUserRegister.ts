@@ -7,7 +7,6 @@ export async function createNewUserRegister(userUid: string, userName: string) {
     .add({
       userUid,
       isAdmin: false,
-      validSubscription: false,
       userName,
       createdAt: firestore.FieldValue.serverTimestamp(),
     })

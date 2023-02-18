@@ -4,6 +4,7 @@ import { WebView } from 'react-native-webview';
 
 import { getTradingView } from '@utils/TradingView';
 import { Header } from '@components/Header';
+import { ScreenActions } from '@components/ScreenActions';
 
 export function TradeChart() {
   const [html, setHtml] = useState('');
@@ -17,6 +18,7 @@ export function TradeChart() {
   return (
     <VStack flex={1}>
       <Header title="Chart Trading" />
+      <ScreenActions />
 
       <WebView
         style={{ flex: 1, backgroundColor: colors.gray[900] }}

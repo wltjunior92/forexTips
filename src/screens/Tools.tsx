@@ -1,5 +1,6 @@
 import { Button } from "@components/Button";
 import { Header } from "@components/Header";
+import { ScreenActions } from "@components/ScreenActions";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { VStack } from "native-base";
@@ -14,6 +15,7 @@ export function Tools() {
   return (
     <VStack flex={1}>
       <Header title="Ferramentas" />
+      <ScreenActions />
 
       <VStack
         mx={4}

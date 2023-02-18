@@ -24,7 +24,7 @@ export function Home() {
   const [daysToSearch, setDaysToSearch] = useState('1');
 
   // Status de inscrição provisório
-  const [validSubscription, setValidSubscription] = useState(false);
+  const [validSubscription] = useState(false);
 
   const { isAdmin } = useAuth();
 
@@ -55,7 +55,7 @@ export function Home() {
   useEffect(() => {
     setIsLoading(true);
 
-    if (validSubscription) {
+    if (validSubscription || isAdmin) {
       fetchSubscribedUserSignals({ setSignalsAction, setIsLoadingAction, daysToSearch });
     } else {
       fetchDefaultUserSignals({ setSignalsAction, setIsLoadingAction });
@@ -81,7 +81,7 @@ export function Home() {
               height={10}
               color="gray.100"
               onValueChange={setDaysToSearch}
-              isDisabled={!validSubscription}
+              isDisabled={!validSubscription && !isAdmin}
               dropdownIcon={
                 <Icon
                   as={MaterialIcons}

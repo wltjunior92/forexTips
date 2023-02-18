@@ -47,7 +47,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
               const [foundUser] = response.docs.map(doc => doc.data())
 
               setIsAdmin(foundUser.isAdmin);
-              setValidSubscription(foundUser.validSubscriptiopn);
             })
             .catch(error => console.log(error))
         }
