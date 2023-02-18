@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Platform } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useTheme } from 'native-base';
@@ -63,10 +63,7 @@ export function AppRoutes() {
           paddingBottom: sizes[10],
           paddingTop: sizes[6],
         },
-        tabBarIconStyle: {
-          flex: 1,
-          backgroundColor: 'red',
-        }
+        tabBarHideOnKeyboard: true,
       }} >
       <Screen
         name="feed"
@@ -79,7 +76,9 @@ export function AppRoutes() {
               width={iconSize}
               height={iconSize}
             />
-          )
+          ),
+          tabBarAccessibilityLabel: 'Feed',
+          tabBarButton: (props) => <TouchableOpacity activeOpacity={0.6} style={{ width: 72, height: 72 }} {...props} />
         }}
       />
       <Screen
@@ -93,7 +92,9 @@ export function AppRoutes() {
               width={iconSize}
               height={iconSize}
             />
-          )
+          ),
+          tabBarAccessibilityLabel: 'Educacional',
+          tabBarButton: (props) => <TouchableOpacity activeOpacity={0.6} style={{ width: 72, height: 72 }} {...props} />
         }}
       />
       <Screen
@@ -107,7 +108,9 @@ export function AppRoutes() {
               width={iconSize + 6}
               height={iconSize + 6}
             />
-          )
+          ),
+          tabBarAccessibilityLabel: 'Home',
+          tabBarButton: (props) => <TouchableOpacity activeOpacity={0.6} style={{ width: 72, height: 72 }} {...props} />
         }}
       />
       <Screen
@@ -121,7 +124,9 @@ export function AppRoutes() {
               width={iconSize}
               height={iconSize}
             />
-          )
+          ),
+          tabBarAccessibilityLabel: 'Cart Trading',
+          tabBarButton: (props) => <TouchableOpacity activeOpacity={0.6} style={{ width: 72, height: 72 }} {...props} />
         }}
       />
       <Screen
@@ -135,7 +140,9 @@ export function AppRoutes() {
               width={iconSize}
               height={iconSize}
             />
-          )
+          ),
+          tabBarAccessibilityLabel: 'Ferramentas',
+          tabBarButton: (props) => <TouchableOpacity activeOpacity={0.1} style={{ width: 72, height: 72 }} {...props} />
         }}
       />
 

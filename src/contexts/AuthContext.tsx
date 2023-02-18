@@ -21,7 +21,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [isLoadingApplication, setIsLoadingApplication] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [validSubscription, setValidSubscription] = useState(false);
+  const [validSubscription, setValidSubscription] = useState(true);
 
   function setUserContext(user: FirebaseAuthTypes.User | null) {
     setUser(user)

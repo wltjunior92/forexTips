@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { FlatList, VStack, Select, Box, Icon } from "native-base";
-import firestore from '@react-native-firebase/firestore';
 
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -14,8 +13,8 @@ import { ListEmpty } from "@components/ListEmpty";
 import { ScreenActions } from "@components/ScreenActions";
 import { EditSignalModal } from "@components/EditSignalModal";
 import { Loading } from "@components/Loading";
-import { tagUserStatus } from "@services/notificationsTags";
-
+import { fetchDefaultUserSignals } from "@services/fetchDefaultUserSignals";
+import { fetchSubscribedUserSignals } from "@services/fetchSubscribedUserSignals";
 
 export function Home() {
   const [signals, setSignals] = useState<ISignal[]>([]);
@@ -23,6 +22,9 @@ export function Home() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedSignal, setSelectedSignal] = useState<ISignal | null>(null);
   const [daysToSearch, setDaysToSearch] = useState('1');
+
+  // Status de inscrição provisório
+  const [validSubscription, setValidSubscription] = useState(false);
 
   const { isAdmin } = useAuth();
 
@@ -42,45 +44,23 @@ export function Home() {
     setSelectedSignal(null)
   }
 
+  function setSignalsAction(value: ISignal[]) {
+    setSignals(value);
+  }
+
+  function setIsLoadingAction(value: boolean) {
+    setIsLoading(value);
+  }
 
   useEffect(() => {
     setIsLoading(true);
-    try {
-      const currentDay = new Date();
-      const dayBefore = new Date(new Date().setDate(currentDay.getDate() - parseInt(daysToSearch)));
 
-      const startDate = firestore.Timestamp.fromDate(dayBefore)
-      const subscribe = firestore()
-        .collection('signals')
-        .orderBy('createdAt', 'asc')
-        .where('createdAt', '>', startDate)
-        .onSnapshot(querySnapshot => {
-          const data = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          })) as ISignal[];
-
-          const sortByStatus = data.sort(signal => {
-            if (signal.status === 'ativo')
-              return -1;
-            return 1
-
-          })
-
-          setSignals(sortByStatus);
-        });
-
-      return () => subscribe();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
+    if (validSubscription) {
+      fetchSubscribedUserSignals({ setSignalsAction, setIsLoadingAction, daysToSearch });
+    } else {
+      fetchDefaultUserSignals({ setSignalsAction, setIsLoadingAction });
     }
   }, [daysToSearch]);
-
-  useEffect(() => {
-    tagUserStatus('user_logged_in')
-  }, []);
 
   return (
     <VStack flex={1} >
@@ -101,6 +81,7 @@ export function Home() {
               height={10}
               color="gray.100"
               onValueChange={setDaysToSearch}
+              isDisabled={!validSubscription}
               dropdownIcon={
                 <Icon
                   as={MaterialIcons}
@@ -111,9 +92,9 @@ export function Home() {
               }
             >
               <Select.Item label="1 dia" value="1" />
-              <Select.Item label="3 dia" value="3" />
-              <Select.Item label="5 dia" value="5" />
-              <Select.Item label="10 dia" value="10" />
+              <Select.Item label="3 dias" value="3" />
+              <Select.Item label="5 dias" value="5" />
+              <Select.Item label="10 dias" value="10" />
             </Select>
           </Box>
         )}

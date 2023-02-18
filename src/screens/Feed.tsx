@@ -1,8 +1,7 @@
 import { useCallback, useState } from "react";
-import { Box, FlatList, Icon, VStack, useToast } from "native-base";
+import { Box, FlatList, VStack, useToast } from "native-base";
 
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import { MaterialIcons } from '@expo/vector-icons';
 import moment from 'moment';
 import 'moment/locale/pt-br'
 moment.locale('pt-br')
@@ -11,7 +10,6 @@ import { FeedPostCard } from "@components/FeedPostCard";
 import { Header } from "@components/Header";
 import { IPost } from "src/interfaces/IPost";
 import { useAuth } from "@hooks/useAuth";
-import { TouchableOpacity } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { ListEmpty } from "@components/ListEmpty";
@@ -25,6 +23,9 @@ export function Feed() {
 
   const [totalPosts, setTotalPosts] = useState(0);
 
+  // Status de inscrição provisório
+  const [validSubscription, setValidSubscription] = useState(false);
+
   const { isAdmin } = useAuth();
 
   const navigator = useNavigation<AppNavigatorRoutesProps>();
@@ -36,6 +37,7 @@ export function Feed() {
   }
 
   async function loadMorePosts() {
+    if (!validSubscription) return;
     if (posts.length < totalPosts) {
       setIsLoading(true)
       firestore()

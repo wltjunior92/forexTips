@@ -72,6 +72,16 @@ export function SignUp() {
   }
 
   async function handleSigninWithEmailAndPassword() {
+    if (email === '') {
+      emailInputRef.current?.focus();
+      return Alert.alert('Criar conta', 'O campo "E-mail" é obrigatório');
+    }
+
+    if (password === '') {
+      passwordInputRef.current?.focus();
+      return Alert.alert('Criar conta', 'O campo "Senha" é obrigatório');
+    }
+
     auth()
       .signInWithEmailAndPassword(email, password)
       .then(async (result) => {
@@ -158,7 +168,10 @@ export function SignUp() {
             width="100%"
             alignItems="center"
           >
-            <HStack>
+            <HStack
+              alignItems="center"
+              justifyContent="center"
+            >
               <Text
                 color="white"
                 mr={2}
@@ -169,6 +182,7 @@ export function SignUp() {
                 trackColor={{ false: colors.gray[200], true: colors.yellow[200] }}
                 thumbColor={isNewUser ? colors.yellow[600] : colors.gray[300]}
                 value={isNewUser}
+                style={{ width: 48, height: 48 }}
                 onValueChange={toggleIsNewUser}
               />
             </HStack>
@@ -177,6 +191,7 @@ export function SignUp() {
           {!isNewUser &&
             <TouchableOpacity
               onPress={handleForgotPassword}
+              style={{ height: 48, alignItems: 'center', justifyContent: 'center' }}
             >
               <Text color="gray.100" fontSize="sm" mt={4}>
                 Recuperar senha
@@ -188,7 +203,7 @@ export function SignUp() {
         <Button
           title="Voltar"
           variant="outline"
-          mt={20}
+          mt={16}
           onPress={handleGoBack}
         />
       </VStack>

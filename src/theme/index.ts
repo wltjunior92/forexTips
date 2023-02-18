@@ -1,6 +1,13 @@
 import { extendTheme } from 'native-base';
 
 export const theme = extendTheme({
+  components: {
+    Select: {
+      baseStyle: {
+        _disabled: '#121214'
+      }
+    },
+  },
   colors: {
     green: {
       700: '#00875F',
@@ -34,5 +41,5 @@ export const theme = extendTheme({
   sizes: {
     14: 56,
     33: 148
-  }
+  },
 });

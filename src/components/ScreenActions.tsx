@@ -39,6 +39,7 @@ export function ScreenActions({ onActionPress, itensCount, component: Component 
       {isAdmin &&
         <TouchableOpacity
           onPress={onActionPress}
+          style={{ width: 40, height: 40, alignItems: 'flex-end', justifyContent: 'center' }}
         >
           <Icon
             as={MaterialIcons}
