@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { HStack, Icon, Text } from "native-base";
 import { TouchableOpacity } from "react-native";
 

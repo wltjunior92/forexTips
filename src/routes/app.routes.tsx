@@ -2,7 +2,8 @@ import { useCallback } from 'react';
 import { Platform, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { useTheme } from 'native-base';
+import { Circle, useTheme } from 'native-base';
+import Purchases from 'react-native-purchases';
 
 import { Educational } from '@screens/Educational';
 import { Feed } from '@screens/Feed';
@@ -12,7 +13,6 @@ import { TradeChart } from '@screens/TradeChart';
 
 import HomeSvg from '@assets/home.svg';
 import BookSvg from '@assets/book.svg';
-import SignalsSvg from '@assets/signals.svg';
 import LogoSvg from '@assets/logoImg.svg';
 import ChartSvg from '@assets/chart.svg';
 import ToolsSvg from '@assets/tools.svg';
@@ -23,6 +23,7 @@ import { UserSettings } from '@screens/UserSettings';
 import { AddPost } from '@screens/AddPost';
 import { tagUserStatus } from '@services/notificationsTags';
 import { Subscription } from '@screens/Subscription';
+import { useAuth } from '@hooks/useAuth';
 
 type AppRoutes = {
   feed: undefined;
@@ -44,10 +45,24 @@ const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
 export function AppRoutes() {
   const { sizes, colors } = useTheme();
 
+  const { setValidSubscriptionAction } = useAuth();
+
   const iconSize = sizes[6];
 
+  async function checkUserStatus() {
+    try {
+      const customerInfo = await Purchases.getCustomerInfo();
+      console.log(JSON.stringify(customerInfo, null, 2));
+      // access latest customerInfo
+    } catch (error) {
+      console.log(error);
+      // Error fetching customer info
+    }
+  }
+
   useFocusEffect(useCallback(() => {
-    tagUserStatus('user_logged_in')
+    tagUserStatus('user_logged_in');
+    // checkUserStatus();
   }, []));
 
   return (
@@ -56,7 +71,7 @@ export function AppRoutes() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: colors.yellow[500],
+        tabBarActiveTintColor: colors.primary[500],
         tabBarInactiveTintColor: colors.gray[200],
         tabBarStyle: {
           backgroundColor: colors.gray[600],
@@ -104,15 +119,21 @@ export function AppRoutes() {
         component={Home}
         options={{
           tabBarIcon: ({ color }) => (
-            <LogoSvg
-              stroke={color}
-              strokeWidth='20'
-              width={iconSize + 6}
-              height={iconSize + 6}
-            />
+            <Circle
+              size={24}
+              bg="gray.600"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <LogoSvg
+                fill={color}
+                width={iconSize + 20}
+                height={iconSize + 20}
+              />
+            </Circle>
           ),
           tabBarAccessibilityLabel: 'Home',
-          tabBarButton: (props) => <TouchableOpacity activeOpacity={0.6} style={{ width: 72, height: 72 }} {...props} />
+          tabBarButton: (props) => <TouchableOpacity activeOpacity={1} style={{ width: 72, height: 72 }} {...props} />
         }}
       />
       <Screen

@@ -6,6 +6,7 @@ type AuthContextDataProps = {
   user: FirebaseAuthTypes.User | null;
   setUserContext: (user: FirebaseAuthTypes.User | null) => void;
   resetIsAdmin: () => void;
+  setValidSubscriptionAction: (value: boolean) => void;
   isAdmin: boolean;
   validSubscription: boolean;
   isLoadingApplication: boolean;
@@ -21,6 +22,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [isLoadingApplication, setIsLoadingApplication] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+
   const [validSubscription, setValidSubscription] = useState(true);
 
   function setUserContext(user: FirebaseAuthTypes.User | null) {
@@ -29,6 +31,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   function resetIsAdmin() {
     setIsAdmin(false);
+  }
+
+  function setValidSubscriptionAction(value: boolean) {
+    setValidSubscription(value);
   }
 
   async function monitorAuth() {
@@ -65,7 +71,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUserContext, isAdmin, validSubscription, isLoadingApplication, resetIsAdmin }}>
+    <AuthContext.Provider value={{ user, setUserContext, isAdmin, validSubscription, isLoadingApplication, resetIsAdmin, setValidSubscriptionAction }}>
       {children}
     </AuthContext.Provider>
   )
