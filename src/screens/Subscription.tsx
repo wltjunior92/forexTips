@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import Purchases from 'react-native-purchases';
+import Purchases, { PurchasesPackage } from 'react-native-purchases';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -40,6 +40,7 @@ export function Subscription() {
           identifier: annual?.product.identifier || '',
           currencyCode: annual?.product.currencyCode || 'BRL',
           description: annual?.product.description || '',
+          package: annual as PurchasesPackage,
         })
         setMonthlySubscription({
           title: monthly?.product.title || '',
@@ -48,6 +49,7 @@ export function Subscription() {
           identifier: monthly?.product.identifier || '',
           currencyCode: monthly?.product.currencyCode || 'BRL',
           description: monthly?.product.description || '',
+          package: monthly as PurchasesPackage,
         })
       }
     } catch (error) {
@@ -77,6 +79,32 @@ export function Subscription() {
   function getPerMonthAnualPrice() {
     const annualPrice = annualSubscription?.price || 0;
     return `R$ ${(annualPrice / 12).toFixed(2).replace('.', ',')}`
+  }
+
+  async function handleAnnualSubscribe() {
+    try {
+      const purchaseMade = await Purchases.purchasePackage(annualSubscription?.package as PurchasesPackage);
+
+      console.log(JSON.stringify(purchaseMade, null, 2))
+      if (typeof purchaseMade.customerInfo.entitlements.active.my_entitlement_identifier !== "undefined") {
+        // Activate subscription
+      }
+    } catch (error) {
+
+    }
+  }
+
+  async function handleMonthlySubscribe() {
+    try {
+      const purchaseMade = await Purchases.purchasePackage(monthlySubscription?.package as PurchasesPackage);
+
+      console.log(JSON.stringify(purchaseMade, null, 2))
+      if (typeof purchaseMade.customerInfo.entitlements.active.my_entitlement_identifier !== "undefined") {
+        // Activate subscription
+      }
+    } catch (error) {
+
+    }
   }
 
   useFocusEffect(useCallback(() => {
@@ -181,6 +209,7 @@ export function Subscription() {
                 _pressed={{
                   bg: 'green.700'
                 }}
+                onPress={handleAnnualSubscribe}
               >
                 Assinar Plano Anual
               </Button>
@@ -219,6 +248,7 @@ export function Subscription() {
                 _pressed={{
                   bg: 'green.700'
                 }}
+                onPress={handleMonthlySubscribe}
               >
                 Assinar Plano Mensal
               </Button>
