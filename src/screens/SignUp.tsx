@@ -86,7 +86,7 @@ export function SignUp() {
       .signInWithEmailAndPassword(email, password)
       .then(async (result) => {
         if (result.additionalUserInfo?.isNewUser) {
-          await createNewUserRegister(result.user.uid, result.user.displayName || '');
+          await createNewUserRegister(result.user.uid, result.user.displayName || '', result.user.email || '');
         }
         setUserContext(result.user);
       })

@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList, VStack, Select, Box, Icon } from "native-base";
 
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { SignalCard } from "@components/SignalCard";
 import { Header } from "@components/Header";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { ISignal } from "src/interfaces/ISignal";
 import { useAuth } from "@hooks/useAuth";
@@ -15,6 +15,8 @@ import { EditSignalModal } from "@components/EditSignalModal";
 import { Loading } from "@components/Loading";
 import { fetchDefaultUserSignals } from "@services/fetchDefaultUserSignals";
 import { fetchSubscribedUserSignals } from "@services/fetchSubscribedUserSignals";
+import { checkUserSubscriptionStatus } from "@services/checkUserSubscriptionStatus";
+import { Alert } from "react-native";
 
 export function Home() {
   const [signals, setSignals] = useState<ISignal[]>([]);
@@ -23,10 +25,7 @@ export function Home() {
   const [selectedSignal, setSelectedSignal] = useState<ISignal | null>(null);
   const [daysToSearch, setDaysToSearch] = useState('1');
 
-  // Status de inscrição provisório
-  const [validSubscription] = useState(false);
-
-  const { isAdmin } = useAuth();
+  const { isAdmin, validSubscription, user, setCustomerInfoAction, setValidSubscriptionAction, customerInfo } = useAuth();
 
   const navigator = useNavigation<AppNavigatorRoutesProps>()
 
@@ -60,7 +59,16 @@ export function Home() {
     } else {
       fetchDefaultUserSignals({ setSignalsAction, setIsLoadingAction });
     }
-  }, [daysToSearch]);
+  }, [daysToSearch, customerInfo]);
+
+  useFocusEffect(useCallback(() => {
+    try {
+      checkUserSubscriptionStatus(setCustomerInfoAction, user?.uid as string, setValidSubscriptionAction)
+    } catch (error) {
+      const err = error as unknown as Error;
+      Alert.alert('Usuário', err.message);
+    }
+  }, []));
 
   return (
     <VStack flex={1} >

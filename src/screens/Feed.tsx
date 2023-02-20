@@ -15,6 +15,8 @@ import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { ListEmpty } from "@components/ListEmpty";
 import { Loading } from "@components/Loading";
 import { ScreenActions } from "@components/ScreenActions";
+import { checkUserSubscriptionStatus } from "@services/checkUserSubscriptionStatus";
+import { Alert } from "react-native";
 
 export function Feed() {
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +28,7 @@ export function Feed() {
   // Status de inscrição provisório
   const [validSubscription] = useState(true);
 
-  const { isAdmin } = useAuth();
+  const { isAdmin, setCustomerInfoAction, user, setValidSubscriptionAction } = useAuth();
 
   const navigator = useNavigation<AppNavigatorRoutesProps>();
 
@@ -106,6 +108,15 @@ export function Feed() {
         bg: 'red.500'
       }))
       .finally(() => setIsLoading(false));
+  }, []));
+
+  useFocusEffect(useCallback(() => {
+    try {
+      checkUserSubscriptionStatus(setCustomerInfoAction, user?.uid as string, setValidSubscriptionAction)
+    } catch (error) {
+      const err = error as unknown as Error;
+      Alert.alert('Usuário', err.message);
+    }
   }, []));
 
   return (

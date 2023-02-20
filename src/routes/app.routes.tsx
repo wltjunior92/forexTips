@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
-import { Platform, TouchableOpacity } from 'react-native';
+import { Alert, Platform, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { Circle, useTheme } from 'native-base';
 import Purchases from 'react-native-purchases';
+import firestore from '@react-native-firebase/firestore';
 
 import { Educational } from '@screens/Educational';
 import { Feed } from '@screens/Feed';
@@ -24,6 +25,8 @@ import { AddPost } from '@screens/AddPost';
 import { tagUserStatus } from '@services/notificationsTags';
 import { Subscription } from '@screens/Subscription';
 import { useAuth } from '@hooks/useAuth';
+import { updateUserSubscriptionStatus } from '@services/updateUserSubscriptionStatus';
+import { checkUserSubscriptionStatus } from '@services/checkUserSubscriptionStatus';
 
 type AppRoutes = {
   feed: undefined;
@@ -45,24 +48,16 @@ const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
 export function AppRoutes() {
   const { sizes, colors } = useTheme();
 
-  const { setValidSubscriptionAction } = useAuth();
+  const { setValidSubscriptionAction, user, setCustomerInfoAction } = useAuth();
 
   const iconSize = sizes[6];
 
-  async function checkUserStatus() {
-    try {
-      const customerInfo = await Purchases.getCustomerInfo();
-      console.log(JSON.stringify(customerInfo, null, 2));
-      // access latest customerInfo
-    } catch (error) {
-      console.log(error);
-      // Error fetching customer info
-    }
-  }
-
   useFocusEffect(useCallback(() => {
     tagUserStatus('user_logged_in');
-    // checkUserStatus();
+  }, [user]));
+
+  useFocusEffect(useCallback(() => {
+    checkUserSubscriptionStatus(setCustomerInfoAction, user?.uid as string, setValidSubscriptionAction);
   }, []));
 
   return (

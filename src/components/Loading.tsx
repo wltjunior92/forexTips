@@ -7,7 +7,7 @@ type Props = ICenterProps & {
 export function Loading({ bg = 'gray.700', ...rest }: Props) {
   return (
     <Center flex={1} bg={bg} {...rest}>
-      <Spinner color="yellow.500" />
+      <Spinner color="primary.600" />
     </Center>
   );
 };

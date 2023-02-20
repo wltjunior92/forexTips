@@ -1,24 +1,33 @@
 import { useCallback, useEffect, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { Button, Center, Divider, Heading, HStack, Icon, Image, ScrollView, Spinner, Text, useTheme, useToast, VStack } from "native-base";
 import Purchases, { PurchasesPackage } from 'react-native-purchases';
+import firestore from '@react-native-firebase/firestore';
+
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { Button, Center, Divider, Heading, HStack, Icon, Image, ScrollView, Spinner, Text, useTheme, useToast, VStack } from "native-base";
 import { IProduct } from "src/interfaces/IProduct";
 
 import BackgroundImg from '@assets/background-subscription.png';
+import { useAuth } from "@hooks/useAuth";
+import { AppNavigatorRoutesProps } from "@routes/app.routes";
+import { updateUserSubscriptionStatus } from "@services/updateUserSubscriptionStatus";
 
 export function Subscription() {
   const [isLoadingSubscriptions, setIsLoadingSubscriptions] = useState(true);
+  const [isRequestingSubscription, setIsRequestingSubscription] = useState(false);
   const [annualSubscription, setAnnualSubscription] = useState<IProduct | null>(null);
   const [monthlySubscription, setMonthlySubscription] = useState<IProduct | null>(null);
   const [discount, setDiscount] = useState('');
   const [perMonthAnnualPrice, setPerMonthAnnualPrice] = useState('');
 
   const { colors } = useTheme();
+  const { user, setValidSubscriptionAction, setCustomerInfoAction } = useAuth();
 
   const toast = useToast();
+
+  const navigator = useNavigation<AppNavigatorRoutesProps>();
 
   async function fetchProductsAvailable() {
     setIsLoadingSubscriptions(true)
@@ -54,7 +63,7 @@ export function Subscription() {
       }
     } catch (error) {
       toast.show({
-        title: 'Não foi possível carregar as nossas ofertas. Por favor, tente novamente..',
+        title: 'Não foi possível carregar as nossas ofertas. Por favor, tente novamente.',
         placement: 'top',
         bg: 'red.500'
       })
@@ -81,29 +90,73 @@ export function Subscription() {
     return `R$ ${(annualPrice / 12).toFixed(2).replace('.', ',')}`
   }
 
+  async function activateSubscription() {
+    await updateUserSubscriptionStatus(user?.uid as string, true, setValidSubscriptionAction);
+
+    navigator.navigate('home');
+  }
+
   async function handleAnnualSubscribe() {
+    setIsRequestingSubscription(true);
     try {
+      if (!annualSubscription?.package) throw new Error()
       const purchaseMade = await Purchases.purchasePackage(annualSubscription?.package as PurchasesPackage);
 
-      console.log(JSON.stringify(purchaseMade, null, 2))
-      if (typeof purchaseMade.customerInfo.entitlements.active.my_entitlement_identifier !== "undefined") {
+      if (typeof purchaseMade.customerInfo.entitlements.active.premium !== "undefined") {
         // Activate subscription
+        await activateSubscription();
+        setCustomerInfoAction(purchaseMade.customerInfo);
       }
     } catch (error) {
-
+      const err = error as unknown as Error;
+      if (err.message === 'The device or user is not allowed to make the purchase.') {
+        toast.show({
+          title: 'Não foi possível concluir a compra. Por favor, verifique a forma de pagamento selecionada e tente novamente.',
+          placement: 'top',
+          bg: 'red.500'
+        })
+      } else if (err.message !== 'This product is already active for the user.'
+        && err.message !== 'Purchase was cancelled.') {
+        toast.show({
+          title: 'Não foi possível solicitar a compra. Por favor, tente novamente mais tarde.',
+          placement: 'top',
+          bg: 'red.500'
+        })
+      }
+    } finally {
+      setIsRequestingSubscription(false);
     }
   }
 
   async function handleMonthlySubscribe() {
+    setIsRequestingSubscription(true)
     try {
+      if (!monthlySubscription?.package) throw new Error()
       const purchaseMade = await Purchases.purchasePackage(monthlySubscription?.package as PurchasesPackage);
 
-      console.log(JSON.stringify(purchaseMade, null, 2))
-      if (typeof purchaseMade.customerInfo.entitlements.active.my_entitlement_identifier !== "undefined") {
+      if (typeof purchaseMade.customerInfo.entitlements.active.premium !== "undefined") {
         // Activate subscription
+        await activateSubscription();
+        setCustomerInfoAction(purchaseMade.customerInfo);
       }
     } catch (error) {
-
+      const err = error as unknown as Error;
+      if (err.message === 'The device or user is not allowed to make the purchase.') {
+        toast.show({
+          title: 'Não foi possível concluir a compra. Por favor, verifique a forma de pagamento selecionada e tente novamente.',
+          placement: 'top',
+          bg: 'red.500'
+        })
+      } else if (err.message !== 'This product is already active for the user.'
+        && err.message !== 'Purchase was cancelled.') {
+        toast.show({
+          title: 'Não foi possível solicitar a compra. Por favor, tente novamente mais tarde.',
+          placement: 'top',
+          bg: 'red.500'
+        })
+      }
+    } finally {
+      setIsRequestingSubscription(false);
     }
   }
 
@@ -210,8 +263,20 @@ export function Subscription() {
                   bg: 'green.700'
                 }}
                 onPress={handleAnnualSubscribe}
+                isDisabled={isRequestingSubscription}
               >
-                Assinar Plano Anual
+                {
+                  isRequestingSubscription ?
+                    <Spinner
+                      color="gray.100"
+                    /> :
+                    <Text
+                      color='white'
+                      fontSize="sm"
+                    >
+                      Assinar Plano Anual
+                    </Text>
+                }
               </Button>
             </VStack>
             <Divider
@@ -249,8 +314,20 @@ export function Subscription() {
                   bg: 'green.700'
                 }}
                 onPress={handleMonthlySubscribe}
+                isDisabled={isRequestingSubscription}
               >
-                Assinar Plano Mensal
+                {
+                  isRequestingSubscription ?
+                    <Spinner
+                      color="gray.100"
+                    /> :
+                    <Text
+                      color='white'
+                      fontSize="sm"
+                    >
+                      Assinar Plano Mensal
+                    </Text>
+                }
               </Button>
             </VStack>
           </VStack>

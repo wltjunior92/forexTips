@@ -15,12 +15,9 @@ type Props = {
 }
 
 export function ScreenActions({ onActionPress, itensCount, component: Component }: Props) {
-  const { isAdmin } = useAuth();
+  const { isAdmin, validSubscription } = useAuth();
 
   const navigator = useNavigation<AppNavigatorRoutesProps>();
-
-  // Status de inscrição provisório
-  const [validSubscription] = useState(false);
 
   function handleNavigateSubscription() {
     navigator.navigate('subscription');
