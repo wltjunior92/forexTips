@@ -1,4 +1,4 @@
-import { Button as NativeBaseButton, HStack, IButtonProps, Text } from 'native-base';
+import { Button as NativeBaseButton, HStack, IButtonProps, Spinner, Text } from 'native-base';
 
 import GoogleLogoSvg from '@assets/googleLogo.svg';
 
@@ -7,7 +7,7 @@ type Props = IButtonProps & {
   variant?: 'solid' | 'outline';
 }
 
-export function GoogleAuthButton({ title, ...rest }: Props) {
+export function GoogleAuthButton({ title, isLoading, ...rest }: Props) {
   return (
     <NativeBaseButton
       w="full"
@@ -26,18 +26,26 @@ export function GoogleAuthButton({ title, ...rest }: Props) {
         alignItems="center"
         justifyContent="center"
       >
-        <Text
-          color="gray.809"
-          fontFamily="heading"
-          fontSize="sm"
-          mr={4}
-        >
-          {title}
-        </Text>
-        <GoogleLogoSvg
-          width={22}
-          height={22}
-        />
+        {
+          isLoading ?
+            <Spinner
+              color="primary.900"
+            /> :
+            <>
+              <Text
+                color="gray.809"
+                fontFamily="heading"
+                fontSize="sm"
+                mr={4}
+              >
+                {title}
+              </Text>
+              <GoogleLogoSvg
+                width={22}
+                height={22}
+              />
+            </>
+        }
       </HStack>
     </NativeBaseButton>
   );

@@ -48,7 +48,7 @@ export function Input({ label, bg = 'gray.700', handlePress, inputRef, ...rest }
           _focus={{
             bg: 'gray.700',
             borderWidth: 1,
-            borderColor: 'yellow.500',
+            borderColor: 'primary.500',
           }}
           _readOnly={{
             color: 'gray.300'

@@ -14,6 +14,8 @@ import { useAuth } from '@hooks/useAuth';
 import { createNewUserRegister } from '@services/createUserRegister';
 
 export function SignUp() {
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
   const [isNewUser, setIsNewUser] = useState(false);
   const toggleIsNewUser = () => setIsNewUser(!isNewUser);
 
@@ -37,6 +39,7 @@ export function SignUp() {
   }
 
   async function handleCreateUserWithEmailAndPassword() {
+    setIsLoggingIn(true);
     if (email === '') {
       emailInputRef.current?.focus();
       return Alert.alert('Criar conta', 'O campo "E-mail" é obrigatório');
@@ -68,10 +71,11 @@ export function SignUp() {
           passwordInputRef.current?.focus();
           return Alert.alert('Criar conta', 'A senha deve ter ao menos 6 caracteres.')
         }
-      });
+      }).finally(() => setIsLoggingIn(false));
   }
 
   async function handleSigninWithEmailAndPassword() {
+    setIsLoggingIn(true);
     if (email === '') {
       emailInputRef.current?.focus();
       return Alert.alert('Criar conta', 'O campo "E-mail" é obrigatório');
@@ -94,7 +98,7 @@ export function SignUp() {
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
           return Alert.alert('Login', 'Usuário não encontrado! E-mail e/ou senha errados.')
         }
-      });
+      }).finally(() => setIsLoggingIn(false));
   }
 
   async function handleForgotPassword() {
@@ -122,10 +126,6 @@ export function SignUp() {
 
         <Center my={24}>
           <LogoSvg />
-
-          <Text color="gray.100" fontSize="sm">
-            Sinais Forex
-          </Text>
         </Center>
 
         <Center>
@@ -162,6 +162,7 @@ export function SignUp() {
             title={isNewUser ? 'Criar e acessar' : 'Fazer login'}
             mb={4}
             onPress={isNewUser ? handleCreateUserWithEmailAndPassword : handleSigninWithEmailAndPassword}
+            isLoading={isLoggingIn}
           />
 
           <Box
@@ -179,8 +180,8 @@ export function SignUp() {
                 Novo usuário?
               </Text>
               <Switch
-                trackColor={{ false: colors.gray[200], true: colors.yellow[200] }}
-                thumbColor={isNewUser ? colors.yellow[600] : colors.gray[300]}
+                trackColor={{ false: colors.gray[200], true: colors.primary[200] }}
+                thumbColor={isNewUser ? colors.primary[600] : colors.gray[300]}
                 value={isNewUser}
                 style={{ width: 48, height: 48 }}
                 onValueChange={toggleIsNewUser}
