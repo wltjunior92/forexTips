@@ -34,7 +34,7 @@ export function SignIn() {
 
       const result = await auth().signInWithCredential(googleCredential);
       if (result.additionalUserInfo?.isNewUser) {
-        await createNewUserRegister(result.user.uid, result.user.displayName || '');
+        await createNewUserRegister(result.user.uid, result.user.displayName || '', result.user.email || '');
       }
       setUserContext(result.user)
     } catch (error) {

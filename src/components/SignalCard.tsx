@@ -89,7 +89,7 @@ export function SignalCard({ side, symbol, limit, take1, take2, take3, stopLoss,
         {isAdmin &&
           <TouchableOpacity
             onPress={onEditClick}
-            style={{ marginLeft: 8 }}
+            style={{ marginLeft: 8, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
           >
             <Icon
               as={MaterialIcons}

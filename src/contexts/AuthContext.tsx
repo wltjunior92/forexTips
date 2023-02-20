@@ -1,14 +1,18 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import firestore from '@react-native-firebase/firestore';
+import { CustomerInfo } from 'react-native-purchases';
 
 type AuthContextDataProps = {
   user: FirebaseAuthTypes.User | null;
   setUserContext: (user: FirebaseAuthTypes.User | null) => void;
   resetIsAdmin: () => void;
+  setValidSubscriptionAction: (value: boolean) => void;
+  setCustomerInfoAction: (value: CustomerInfo) => void;
   isAdmin: boolean;
   validSubscription: boolean;
   isLoadingApplication: boolean;
+  customerInfo: CustomerInfo | null;
 }
 
 type AuthContextProviderProps = {
@@ -20,8 +24,10 @@ export const AuthContext = createContext<AuthContextDataProps>({} as AuthContext
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [isLoadingApplication, setIsLoadingApplication] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+  const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [validSubscription, setValidSubscription] = useState(false);
+
+  const [validSubscription, setValidSubscription] = useState(true);
 
   function setUserContext(user: FirebaseAuthTypes.User | null) {
     setUser(user)
@@ -29,6 +35,14 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   function resetIsAdmin() {
     setIsAdmin(false);
+  }
+
+  function setValidSubscriptionAction(value: boolean) {
+    setValidSubscription(value);
+  }
+
+  function setCustomerInfoAction(value: CustomerInfo) {
+    setCustomerInfo(value);
   }
 
   async function monitorAuth() {
@@ -47,7 +61,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
               const [foundUser] = response.docs.map(doc => doc.data())
 
               setIsAdmin(foundUser.isAdmin);
-              setValidSubscription(foundUser.validSubscriptiopn);
             })
             .catch(error => console.log(error))
         }
@@ -66,7 +79,17 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUserContext, isAdmin, validSubscription, isLoadingApplication, resetIsAdmin }}>
+    <AuthContext.Provider value={{
+      user,
+      setUserContext,
+      isAdmin,
+      validSubscription,
+      isLoadingApplication,
+      resetIsAdmin,
+      setValidSubscriptionAction,
+      setCustomerInfoAction,
+      customerInfo
+    }}>
       {children}
     </AuthContext.Provider>
   )

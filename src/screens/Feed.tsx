@@ -1,8 +1,7 @@
 import { useCallback, useState } from "react";
-import { Box, FlatList, Icon, VStack, useToast } from "native-base";
+import { Box, FlatList, VStack, useToast } from "native-base";
 
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import { MaterialIcons } from '@expo/vector-icons';
 import moment from 'moment';
 import 'moment/locale/pt-br'
 moment.locale('pt-br')
@@ -11,12 +10,13 @@ import { FeedPostCard } from "@components/FeedPostCard";
 import { Header } from "@components/Header";
 import { IPost } from "src/interfaces/IPost";
 import { useAuth } from "@hooks/useAuth";
-import { TouchableOpacity } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { ListEmpty } from "@components/ListEmpty";
 import { Loading } from "@components/Loading";
 import { ScreenActions } from "@components/ScreenActions";
+import { checkUserSubscriptionStatus } from "@services/checkUserSubscriptionStatus";
+import { Alert } from "react-native";
 
 export function Feed() {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +25,10 @@ export function Feed() {
 
   const [totalPosts, setTotalPosts] = useState(0);
 
-  const { isAdmin } = useAuth();
+  // Status de inscrição provisório
+  const [validSubscription] = useState(true);
+
+  const { isAdmin, setCustomerInfoAction, user, setValidSubscriptionAction } = useAuth();
 
   const navigator = useNavigation<AppNavigatorRoutesProps>();
 
@@ -36,6 +39,7 @@ export function Feed() {
   }
 
   async function loadMorePosts() {
+    if (!validSubscription && !isAdmin) return;
     if (posts.length < totalPosts) {
       setIsLoading(true)
       firestore()
@@ -106,6 +110,15 @@ export function Feed() {
       .finally(() => setIsLoading(false));
   }, []));
 
+  useFocusEffect(useCallback(() => {
+    try {
+      checkUserSubscriptionStatus(setCustomerInfoAction, user?.uid as string, setValidSubscriptionAction)
+    } catch (error) {
+      const err = error as unknown as Error;
+      Alert.alert('Usuário', err.message);
+    }
+  }, []));
+
   return (
     <VStack flex={1}>
       <Header title="Feed" from="feed" />
@@ -135,7 +148,7 @@ export function Feed() {
           )}
           ListEmptyComponent={() => (
             <ListEmpty
-              message="Nenhum post encontrado 🤔"
+              message={isLoading ? 'Carregando posts...' : 'Nenhum post encontrado 🤔'}
             />
           )}
           onEndReached={loadMorePosts}

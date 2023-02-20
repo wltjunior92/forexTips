@@ -1,8 +1,10 @@
 import { useCallback } from 'react';
-import { Platform } from 'react-native';
+import { Alert, Platform, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { useTheme } from 'native-base';
+import { Circle, useTheme } from 'native-base';
+import Purchases from 'react-native-purchases';
+import firestore from '@react-native-firebase/firestore';
 
 import { Educational } from '@screens/Educational';
 import { Feed } from '@screens/Feed';
@@ -12,7 +14,6 @@ import { TradeChart } from '@screens/TradeChart';
 
 import HomeSvg from '@assets/home.svg';
 import BookSvg from '@assets/book.svg';
-import SignalsSvg from '@assets/signals.svg';
 import LogoSvg from '@assets/logoImg.svg';
 import ChartSvg from '@assets/chart.svg';
 import ToolsSvg from '@assets/tools.svg';
@@ -22,6 +23,10 @@ import { AddSignal } from '@screens/AddSignal';
 import { UserSettings } from '@screens/UserSettings';
 import { AddPost } from '@screens/AddPost';
 import { tagUserStatus } from '@services/notificationsTags';
+import { Subscription } from '@screens/Subscription';
+import { useAuth } from '@hooks/useAuth';
+import { updateUserSubscriptionStatus } from '@services/updateUserSubscriptionStatus';
+import { checkUserSubscriptionStatus } from '@services/checkUserSubscriptionStatus';
 
 type AppRoutes = {
   feed: undefined;
@@ -33,6 +38,7 @@ type AppRoutes = {
   addSignal: undefined;
   userSettings: undefined;
   addPost: undefined;
+  subscription: undefined;
 }
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
@@ -42,10 +48,16 @@ const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
 export function AppRoutes() {
   const { sizes, colors } = useTheme();
 
+  const { setValidSubscriptionAction, user, setCustomerInfoAction } = useAuth();
+
   const iconSize = sizes[6];
 
   useFocusEffect(useCallback(() => {
-    tagUserStatus('user_logged_in')
+    tagUserStatus('user_logged_in');
+  }, [user]));
+
+  useFocusEffect(useCallback(() => {
+    checkUserSubscriptionStatus(setCustomerInfoAction, user?.uid as string, setValidSubscriptionAction);
   }, []));
 
   return (
@@ -54,7 +66,7 @@ export function AppRoutes() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: colors.yellow[500],
+        tabBarActiveTintColor: colors.primary[500],
         tabBarInactiveTintColor: colors.gray[200],
         tabBarStyle: {
           backgroundColor: colors.gray[600],
@@ -63,10 +75,7 @@ export function AppRoutes() {
           paddingBottom: sizes[10],
           paddingTop: sizes[6],
         },
-        tabBarIconStyle: {
-          flex: 1,
-          backgroundColor: 'red',
-        }
+        tabBarHideOnKeyboard: true,
       }} >
       <Screen
         name="feed"
@@ -79,7 +88,9 @@ export function AppRoutes() {
               width={iconSize}
               height={iconSize}
             />
-          )
+          ),
+          tabBarAccessibilityLabel: 'Feed',
+          tabBarButton: (props) => <TouchableOpacity activeOpacity={0.6} style={{ width: 72, height: 72 }} {...props} />
         }}
       />
       <Screen
@@ -93,7 +104,9 @@ export function AppRoutes() {
               width={iconSize}
               height={iconSize}
             />
-          )
+          ),
+          tabBarAccessibilityLabel: 'Educacional',
+          tabBarButton: (props) => <TouchableOpacity activeOpacity={0.6} style={{ width: 72, height: 72 }} {...props} />
         }}
       />
       <Screen
@@ -101,13 +114,21 @@ export function AppRoutes() {
         component={Home}
         options={{
           tabBarIcon: ({ color }) => (
-            <LogoSvg
-              stroke={color}
-              strokeWidth='20'
-              width={iconSize + 6}
-              height={iconSize + 6}
-            />
-          )
+            <Circle
+              size={24}
+              bg="gray.600"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <LogoSvg
+                fill={color}
+                width={iconSize + 20}
+                height={iconSize + 20}
+              />
+            </Circle>
+          ),
+          tabBarAccessibilityLabel: 'Home',
+          tabBarButton: (props) => <TouchableOpacity activeOpacity={1} style={{ width: 72, height: 72 }} {...props} />
         }}
       />
       <Screen
@@ -121,7 +142,9 @@ export function AppRoutes() {
               width={iconSize}
               height={iconSize}
             />
-          )
+          ),
+          tabBarAccessibilityLabel: 'Cart Trading',
+          tabBarButton: (props) => <TouchableOpacity activeOpacity={0.6} style={{ width: 72, height: 72 }} {...props} />
         }}
       />
       <Screen
@@ -135,7 +158,9 @@ export function AppRoutes() {
               width={iconSize}
               height={iconSize}
             />
-          )
+          ),
+          tabBarAccessibilityLabel: 'Ferramentas',
+          tabBarButton: (props) => <TouchableOpacity activeOpacity={0.1} style={{ width: 72, height: 72 }} {...props} />
         }}
       />
 
@@ -166,6 +191,14 @@ export function AppRoutes() {
       <Screen
         name="addPost"
         component={AddPost}
+        options={{
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Screen
+        name="subscription"
+        component={Subscription}
         options={{
           tabBarButton: () => null,
         }}

@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { Alert, TouchableOpacity } from "react-native";
 
-import { Center, Image, ScrollView, VStack, Skeleton, Text, useToast } from "native-base";
+import { Center, Image, ScrollView, VStack, Skeleton, Text, useToast, Link } from "native-base";
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
@@ -24,7 +24,9 @@ export function UserSettings() {
   const [displayName, setDisplayName] = useState<string | null | undefined>('');
   const [email, setEmail] = useState<string | null | undefined>('');
 
-  const { user, setUserContext } = useAuth();
+  const [currentSubscription, setCurrentSubscription] = useState<string | null | undefined>('');
+
+  const { user, setUserContext, customerInfo } = useAuth();
 
   const toast = useToast();
 
@@ -101,6 +103,26 @@ export function UserSettings() {
     setUserContext(loadedUser);
   }, []))
 
+  useFocusEffect(useCallback(() => {
+    const assinatura = customerInfo?.entitlements.active.premium;
+    if (typeof assinatura !== "undefined") {
+      switch (assinatura.productIdentifier) {
+        case '1copy_cash_premium':
+          setCurrentSubscription('Premium mensal ⭐')
+          break;
+        case 'copy_cash_premium_anual':
+          setCurrentSubscription('Premium anual ⭐')
+          break;
+        default:
+          setCurrentSubscription('Nenhuma')
+          break;
+      }
+    } else {
+      setCurrentSubscription('Nenhuma')
+    }
+  }, [customerInfo]))
+
+
   return (
     <VStack flex={1}>
       <Header title="Usuário" showBackButton from={'home'} />
@@ -159,6 +181,29 @@ export function UserSettings() {
             isReadOnly
             defaultValue={email || ''}
           />
+
+          <Input
+            label="Assinatura:"
+            bg="gray.900"
+            isReadOnly
+            defaultValue={currentSubscription || 'Nenhuma'}
+            _readOnly={{
+              color: 'gray.100'
+            }}
+          />
+
+          {!!customerInfo?.managementURL &&
+            <Link
+              href={customerInfo?.managementURL || ''}
+              isExternal
+              _text={{
+                color: 'gray.100'
+              }}
+              mb={6}
+            >
+              Gerenciar Assinatura
+            </Link>
+          }
 
           <Button
             title="Salvar alterações"

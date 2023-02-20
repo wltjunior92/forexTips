@@ -49,9 +49,9 @@ export function Header({ title, showBackButton = false, from }: Props) {
   return (
     <HStack
       flex={1}
-      pt={16}
-      minH={130}
-      maxH={130}
+      pt={12}
+      minH={105}
+      maxH={105}
       px={6}
       bg="gray.700"
       {...(showBackButton && { justifyContent: 'space-between' })}
