@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { FlatList, VStack, Select, Box, Icon } from "native-base";
+import { FlatList, VStack, Select, Box, Icon, Center, Text } from "native-base";
 
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -72,7 +72,7 @@ export function Home() {
 
   return (
     <VStack flex={1} >
-      <Header title="Home" />
+      <Header title="Sala de sinais" />
 
       <ScreenActions
         component={() => (
@@ -84,10 +84,10 @@ export function Home() {
               size="sm"
               defaultValue={daysToSearch}
               width={24}
-              bg="gray.800"
+              bg="gray.400"
               borderWidth={0}
               height={10}
-              color="gray.100"
+              color="white"
               onValueChange={setDaysToSearch}
               isDisabled={!validSubscription && !isAdmin}
               dropdownIcon={
@@ -135,10 +135,17 @@ export function Home() {
                 message="Nenhum sinal ainda"
               />
             )}
+            ListFooterComponent={() => (
+              <Center w="100%" mt={6}>
+                <Text color="gray.300" textAlign="center">
+                  Fim da lista de sinais {'\n'}
+                  para o período selecionado
+                </Text>
+              </Center>
+            )}
             flex={1}
             showsVerticalScrollIndicator={false}
-            px={6}
-            contentContainerStyle={{ paddingBottom: 36 }}
+            contentContainerStyle={{ paddingBottom: 36, marginTop: 4 }}
           />
       }
 

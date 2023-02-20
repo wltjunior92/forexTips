@@ -1,14 +1,12 @@
-import { Dimensions, TouchableOpacity } from 'react-native';
-import { VStack, Image, Heading, HStack, useTheme, Text, Icon } from "native-base";
+import { TouchableOpacity } from 'react-native';
+import { VStack, Heading, HStack, useTheme, Text, Icon, Box } from "native-base";
 import { MaterialIcons } from '@expo/vector-icons';
-
-import BullImg from '@assets/bull.png';
-import BearImg from '@assets/bear.png';
 
 import TrendUpSvg from '@assets/trendUp.svg';
 import TrendDownSvg from '@assets/trendDown.svg';
 import { ISignal } from 'src/interfaces/ISignal';
 import { useAuth } from '@hooks/useAuth';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export type Props = ISignal & {
   onEditClick: () => void;
@@ -19,25 +17,41 @@ export function SignalCard({ side, symbol, limit, take1, take2, take3, stopLoss,
 
   const { isAdmin } = useAuth();
 
-  const win = Dimensions.get('window')
+  function getBgColor(status: 'ativo' | 'expirado' | 'cancelado', side: 'buy' | 'sell') {
+    if (status !== 'ativo') {
+      return [colors.gray[600], colors.gray[400]]
+    } else {
+      if (side === 'buy') {
+        return [colors.green[700], colors.gray[400]];
+      }
+      return [colors.red[700], colors.gray[400]];
+    }
+  }
 
   return (
     <VStack
       flex={1}
-      bg={status !== 'ativo' ? 'gray.900' : "gray.800"}
-      h={140}
-      borderRadius={8}
-      mb={4}
       p={4}
       overflow="hidden"
+      mb={1}
     >
-      <Image
-        source={side === 'buy' ? BullImg : BearImg}
-        alt={side === 'buy' ? 'Touro representando Bull Market' : 'Urso representando Bear Market'}
-        resizeMode="contain"
+      {/* <Box
         position="absolute"
-        h={40}
-        width={win.width - 40}
+        w="150%"
+        h="150%"
+        bg={getBgColor(status, side)}
+        opacity={0.2}
+      /> */}
+      <LinearGradient
+        style={{
+          position: 'absolute',
+          width: '125%',
+          height: '125%',
+          opacity: 0.4
+        }}
+        colors={getBgColor(status, side)}
+        start={[1, -0.5]}
+        end={[1, 1.5]}
       />
 
       <HStack width="100%">
@@ -67,7 +81,7 @@ export function SignalCard({ side, symbol, limit, take1, take2, take3, stopLoss,
 
         {
           status !== 'ativo' &&
-          <VStack>
+          <VStack alignItems="flex-end">
             <>
               {status !== 'cancelado' &&
                 <HStack>
@@ -80,7 +94,7 @@ export function SignalCard({ side, symbol, limit, take1, take2, take3, stopLoss,
                 </HStack>
               }
             </>
-            <Text color="gray.300" fontSize="xs">
+            <Text color="gray.300" fontSize="xs" fontWeight="bold">
               {status?.toUpperCase()}
             </Text>
           </VStack>
@@ -101,85 +115,95 @@ export function SignalCard({ side, symbol, limit, take1, take2, take3, stopLoss,
         }
       </HStack>
 
-      <HStack flex={1} mt={10} justifyContent="space-around">
-        <VStack alignItems="center">
+      <VStack flex={1} mt={5} justifyContent="space-around" space={2}>
+        <HStack alignItems="flex-end">
           <Text
             color={status !== 'ativo' ? 'gray.300' : "white"}
             fontSize="xs"
+            fontWeight="bold"
           >
             {side === 'buy' ? 'BUY STOP' : 'SELL LIMIT'}
           </Text>
+          <Box flex={1} h={'1px'} mx={2} mb={'4px'} borderBottomWidth="1" borderColor="gray.300" borderStyle="dashed" />
           <Text
             color={status !== 'ativo' ? 'gray.300' : "white"}
             fontWeight="bold"
           >
             {limit}
           </Text>
-        </VStack>
+        </HStack>
 
-        <VStack alignItems="center">
+        <HStack alignItems="flex-end">
           <Text
             color={status !== 'ativo' ? 'gray.300' : "white"}
             fontSize="xs"
+            fontWeight="bold"
           >
             TAKE 1
           </Text>
+          <Box flex={1} h={'1px'} mx={2} mb={'4px'} borderBottomWidth="1" borderColor="gray.300" borderStyle="dashed" />
           <Text
             color={status !== 'ativo' ? 'gray.300' : "white"}
             fontWeight="bold"
           >
             {take1}
           </Text>
-        </VStack>
+        </HStack>
 
         {!!take2 &&
-          <VStack alignItems="center">
+          <HStack alignItems="flex-end">
             <Text
               color={status !== 'ativo' ? 'gray.300' : "white"}
               fontSize="xs"
+              fontWeight="bold"
             >
               TAKE 2
             </Text>
+            <Box flex={1} h={'1px'} mx={2} mb={'4px'} borderBottomWidth="1" borderColor="gray.300" borderStyle="dashed" />
             <Text
               color={status !== 'ativo' ? 'gray.300' : "white"}
               fontWeight="bold"
             >
               {take2}
             </Text>
-          </VStack>
+          </HStack>
         }
         {!!take3 &&
-          <VStack alignItems="center">
+          <HStack alignItems="flex-end">
             <Text
               color={status !== 'ativo' ? 'gray.300' : "white"}
               fontSize="xs"
+              fontWeight="bold"
             >
               TAKE 3
             </Text>
+            <Box flex={1} h={'1px'} mx={2} mb={'4px'} borderBottomWidth="1" borderColor="gray.300" borderStyle="dashed" />
             <Text
               color={status !== 'ativo' ? 'gray.300' : "white"}
               fontWeight="bold"
             >
               {take3}
             </Text>
-          </VStack>
+          </HStack>
         }
 
-        <VStack alignItems="center">
+        <HStack alignItems="flex-end">
           <Text
             color={status !== 'ativo' ? 'gray.300' : "white"}
             fontSize="xs"
+            fontWeight="bold"
           >
             STOP
           </Text>
+          <Box flex={1} h={'1px'} mx={2} mb={'4px'} borderBottomWidth="1" borderColor="gray.300" borderStyle="dashed" />
           <Text
             color={status !== 'ativo' ? 'gray.300' : "white"}
             fontWeight="bold"
           >
             {stopLoss}
           </Text>
-        </VStack>
-      </HStack>
+        </HStack>
+      </VStack>
     </VStack>
   );
 };

@@ -24,7 +24,8 @@ export const theme = extendTheme({
     },
     white: '#FFFFFF',
     red: {
-      500: '#F75A68'
+      700: '#e23846',
+      500: '#F75A68',
     },
     primary: {
       100: '#ddf1fc',

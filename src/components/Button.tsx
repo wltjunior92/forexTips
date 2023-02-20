@@ -3,10 +3,9 @@ import { Button as NativeBaseButton, IButtonProps, Text, Spinner } from 'native-
 type Props = IButtonProps & {
   title: string;
   variant?: 'solid' | 'outline';
-  isLoading?: boolean;
 }
 
-export function Button({ title, variant = 'solid', isLoading = false, ...rest }: Props) {
+export function Button({ title, variant = 'solid', isLoading, ...rest }: Props) {
   return (
     <NativeBaseButton
       w="full"

@@ -26,10 +26,11 @@ export function ScreenActions({ onActionPress, itensCount, component: Component 
   return (
     <HStack
       w="100%"
-      mb={4}
       px={6}
+      pb={4}
       alignItems="center"
       justifyContent="center"
+      bg="gray.600"
     >
       {!!!Component &&
         <Text

@@ -15,10 +15,10 @@ export function GoogleAuthButton({ title, isLoading, ...rest }: Props) {
       bg="gray.100"
       rounded="sm"
       _pressed={{
-        bg: 'yellow.800'
+        bg: 'gray.200'
       }}
       _disabled={{
-        bg: 'yellow.500',
+        bg: 'gray.500',
       }}
       {...rest}
     >
