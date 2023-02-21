@@ -14,7 +14,6 @@ type Props = {
 export function SignalsList({ signals, onEditClick, isLoading }: Props) {
   const SignalsList = useMemo(() => (
     <>
-      {/* {console.log('renderizou lista')} */}
       {isLoading ?
         <LoadingSignals /> :
         <FlatList
