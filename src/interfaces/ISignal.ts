@@ -9,5 +9,5 @@ export interface ISignal {
   stopLoss: string;
   result?: string;
   status: 'ativo' | 'expirado' | 'cancelado';
-  createdAt?: string;
+  createdAt?: any;
 }

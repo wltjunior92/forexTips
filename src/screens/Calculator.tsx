@@ -49,6 +49,7 @@ export function Calculator() {
         <VStack
           flex={1}
           mx={4}
+          pt={4}
           pb={16}
         >
           <Input

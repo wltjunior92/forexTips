@@ -1,10 +1,8 @@
 import { useCallback } from 'react';
-import { Alert, Platform, TouchableOpacity } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { Circle, useTheme } from 'native-base';
-import Purchases from 'react-native-purchases';
-import firestore from '@react-native-firebase/firestore';
 
 import { Educational } from '@screens/Educational';
 import { Feed } from '@screens/Feed';
@@ -25,8 +23,6 @@ import { AddPost } from '@screens/AddPost';
 import { tagUserStatus } from '@services/notificationsTags';
 import { Subscription } from '@screens/Subscription';
 import { useAuth } from '@hooks/useAuth';
-import { updateUserSubscriptionStatus } from '@services/updateUserSubscriptionStatus';
-import { checkUserSubscriptionStatus } from '@services/checkUserSubscriptionStatus';
 
 type AppRoutes = {
   feed: undefined;
@@ -56,10 +52,6 @@ export function AppRoutes() {
     tagUserStatus('user_logged_in');
   }, [user]));
 
-  useFocusEffect(useCallback(() => {
-    checkUserSubscriptionStatus(setCustomerInfoAction, user?.uid as string, setValidSubscriptionAction);
-  }, []));
-
   return (
     <Navigator
       initialRouteName='home'
@@ -74,6 +66,8 @@ export function AppRoutes() {
           height: Platform.OS === 'android' ? 'auto' : 96,
           paddingBottom: sizes[10],
           paddingTop: sizes[6],
+          elevation: 10,
+          shadowColor: '#fff',
         },
         tabBarHideOnKeyboard: true,
       }} >
@@ -115,7 +109,7 @@ export function AppRoutes() {
         options={{
           tabBarIcon: ({ color }) => (
             <Circle
-              size={24}
+              size={20}
               bg="gray.600"
               alignItems="center"
               justifyContent="center"

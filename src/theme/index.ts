@@ -24,12 +24,19 @@ export const theme = extendTheme({
     },
     white: '#FFFFFF',
     red: {
-      500: '#F75A68'
+      700: '#e23846',
+      500: '#F75A68',
     },
     primary: {
+      100: '#ddf1fc',
+      200: '#c0e7fc',
+      300: '#a0dcfb',
       400: '#87d3fb',
       500: '#50c1fb',
       600: '#44a5d8',
+      700: '#348ebd',
+      800: '#237099',
+      900: '#165474',
     }
   },
   fonts: {

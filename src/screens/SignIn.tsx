@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { VStack, Image, Text, Center, Heading, ScrollView } from 'native-base';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
@@ -14,6 +14,8 @@ import { useAuth } from '@hooks/useAuth';
 import { createNewUserRegister } from '@services/createUserRegister';
 
 export function SignIn() {
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
   const { setUserContext } = useAuth();
@@ -23,6 +25,7 @@ export function SignIn() {
   }
 
   async function handleGoogleSignIn() {
+    setIsLoggingIn(true);
     try {
       const haveGooglePlay = await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       if (!haveGooglePlay)
@@ -39,6 +42,8 @@ export function SignIn() {
       setUserContext(result.user)
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsLoggingIn(false);
     }
   }
 
@@ -64,10 +69,6 @@ export function SignIn() {
 
         <Center my={24}>
           <LogoSvg />
-
-          <Text color="gray.100" fontSize="sm">
-            Sinais Forex
-          </Text>
         </Center>
 
         <Center mt={64}>
@@ -79,6 +80,7 @@ export function SignIn() {
             title="Acessar com o Google"
             mb={4}
             onPress={handleGoogleSignIn}
+            isLoading={isLoggingIn}
           />
         </Center>
 

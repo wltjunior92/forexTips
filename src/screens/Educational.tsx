@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Alert } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { VStack } from "native-base";
@@ -11,11 +11,13 @@ import { useAuth } from "@hooks/useAuth";
 
 
 export function Educational() {
-  const { setCustomerInfoAction, user, setValidSubscriptionAction } = useAuth();
+  const { setCustomerInfoAction, user, setValidSubscriptionAction, customerInfo } = useAuth();
+
+  const loadedCustomer = useMemo(() => customerInfo, [customerInfo]);
 
   useFocusEffect(useCallback(() => {
     try {
-      checkUserSubscriptionStatus(setCustomerInfoAction, user?.uid as string, setValidSubscriptionAction)
+      checkUserSubscriptionStatus(setCustomerInfoAction, user?.uid as string, setValidSubscriptionAction, loadedCustomer)
     } catch (error) {
       const err = error as unknown as Error;
       Alert.alert('Usuário', err.message);
@@ -24,7 +26,7 @@ export function Educational() {
   return (
     <VStack flex={1}>
       <Header title="Estudos" />
-      <ScreenActions />
+      <ScreenActions onActionPress={() => {}} />
     </VStack>
   );
 };

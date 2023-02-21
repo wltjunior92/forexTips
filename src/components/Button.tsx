@@ -3,24 +3,23 @@ import { Button as NativeBaseButton, IButtonProps, Text, Spinner } from 'native-
 type Props = IButtonProps & {
   title: string;
   variant?: 'solid' | 'outline';
-  isLoading?: boolean;
 }
 
-export function Button({ title, variant = 'solid', isLoading = false, ...rest }: Props) {
+export function Button({ title, variant = 'solid', isLoading, ...rest }: Props) {
   return (
     <NativeBaseButton
       w="full"
       h={14}
-      bg={variant === 'outline' ? 'transparent' : 'yellow.700'}
+      bg={variant === 'outline' ? 'transparent' : 'primary.700'}
       borderWidth={variant === 'outline' ? 1 : 0}
-      borderColor="yellow.700"
+      borderColor="primary.600"
       isDisabled={isLoading}
       rounded="sm"
       _pressed={{
-        bg: variant === 'outline' ? 'gray.500' : 'yellow.800'
+        bg: variant === 'outline' ? 'gray.500' : 'primary.800'
       }}
       _disabled={{
-        bg: 'yellow.500',
+        bg: 'primary.800',
       }}
       {...rest}
     >
@@ -30,7 +29,7 @@ export function Button({ title, variant = 'solid', isLoading = false, ...rest }:
             color="gray.200"
           /> :
           <Text
-            color={variant === 'outline' ? 'yellow.500' : 'white'}
+            color={variant === 'outline' ? 'primary.600' : 'white'}
             fontFamily="heading"
             fontSize="sm"
           >
