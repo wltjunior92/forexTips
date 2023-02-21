@@ -1,10 +1,8 @@
 import { useCallback } from 'react';
-import { Alert, Platform, TouchableOpacity } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { Circle, useTheme } from 'native-base';
-import Purchases from 'react-native-purchases';
-import firestore from '@react-native-firebase/firestore';
 
 import { Educational } from '@screens/Educational';
 import { Feed } from '@screens/Feed';
@@ -25,7 +23,6 @@ import { AddPost } from '@screens/AddPost';
 import { tagUserStatus } from '@services/notificationsTags';
 import { Subscription } from '@screens/Subscription';
 import { useAuth } from '@hooks/useAuth';
-import { checkUserSubscriptionStatus } from '@services/checkUserSubscriptionStatus';
 
 type AppRoutes = {
   feed: undefined;
@@ -54,10 +51,6 @@ export function AppRoutes() {
   useFocusEffect(useCallback(() => {
     tagUserStatus('user_logged_in');
   }, [user]));
-
-  useFocusEffect(useCallback(() => {
-    checkUserSubscriptionStatus(setCustomerInfoAction, user?.uid as string, setValidSubscriptionAction);
-  }, []));
 
   return (
     <Navigator

@@ -33,15 +33,8 @@ export function SignalCard({ side, symbol, limit, take1, take2, take3, stopLoss,
       flex={1}
       p={4}
       overflow="hidden"
-      mb={1}
+      mb={'2px'}
     >
-      {/* <Box
-        position="absolute"
-        w="150%"
-        h="150%"
-        bg={getBgColor(status, side)}
-        opacity={0.2}
-      /> */}
       <LinearGradient
         style={{
           position: 'absolute',

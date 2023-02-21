@@ -1,5 +1,5 @@
-import { useCallback, useState } from "react";
-import { Box, FlatList, VStack, useToast } from "native-base";
+import { useCallback, useMemo, useState } from "react";
+import { Box, FlatList, VStack, useToast, Center, Text } from "native-base";
 
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import moment from 'moment';
@@ -25,10 +25,7 @@ export function Feed() {
 
   const [totalPosts, setTotalPosts] = useState(0);
 
-  // Status de inscrição provisório
-  const [validSubscription] = useState(true);
-
-  const { isAdmin, setCustomerInfoAction, user, setValidSubscriptionAction } = useAuth();
+  const { isAdmin, setCustomerInfoAction, user, setValidSubscriptionAction, validSubscription, customerInfo } = useAuth();
 
   const navigator = useNavigation<AppNavigatorRoutesProps>();
 
@@ -110,9 +107,11 @@ export function Feed() {
       .finally(() => setIsLoading(false));
   }, []));
 
+  const loadedCustomer = useMemo(() => customerInfo, [customerInfo]);
+
   useFocusEffect(useCallback(() => {
     try {
-      checkUserSubscriptionStatus(setCustomerInfoAction, user?.uid as string, setValidSubscriptionAction)
+      checkUserSubscriptionStatus(setCustomerInfoAction, user?.uid as string, setValidSubscriptionAction, loadedCustomer)
     } catch (error) {
       const err = error as unknown as Error;
       Alert.alert('Usuário', err.message);
@@ -151,8 +150,16 @@ export function Feed() {
               message={isLoading ? 'Carregando posts...' : 'Nenhum post encontrado 🤔'}
             />
           )}
+          ListFooterComponent={() => (
+            <Center w="100%" mt={6}>
+              <Text color="gray.300" textAlign="center">
+                Você chegou no final do feed
+                {'\n'}{!validSubscription && !isAdmin && 'Assina o plano premium para ver mais posts'}
+              </Text>
+            </Center>
+          )}
           onEndReached={loadMorePosts}
-          pb={16}
+          contentContainerStyle={{ paddingBottom: 40, marginTop: 1 }}
           showsVerticalScrollIndicator={false}
         />
       </Box>

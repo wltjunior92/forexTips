@@ -12,9 +12,10 @@ type Props = {
   onActionPress?: () => void;
   itensCount?: string;
   component?: () => JSX.Element;
+  backGround?: string;
 }
 
-export function ScreenActions({ onActionPress, itensCount, component: Component }: Props) {
+export function ScreenActions({ onActionPress, backGround = 'gray.600', itensCount, component: Component }: Props) {
   const { isAdmin, validSubscription } = useAuth();
 
   const navigator = useNavigation<AppNavigatorRoutesProps>();
@@ -27,10 +28,9 @@ export function ScreenActions({ onActionPress, itensCount, component: Component 
     <HStack
       w="100%"
       px={6}
-      pb={4}
       alignItems="center"
       justifyContent="center"
-      bg="gray.600"
+      bg={backGround}
     >
       {!!!Component &&
         <Text
@@ -46,17 +46,21 @@ export function ScreenActions({ onActionPress, itensCount, component: Component 
       }
 
       {isAdmin ?
-        <TouchableOpacity
-          onPress={onActionPress}
-          style={{ width: 40, height: 40, alignItems: 'flex-end', justifyContent: 'center' }}
-        >
-          <Icon
-            as={MaterialIcons}
-            name="add"
-            color="gray.200"
-            size={7}
-          />
-        </TouchableOpacity>
+        <>
+          {!!onActionPress &&
+            <TouchableOpacity
+              onPress={onActionPress}
+              style={{ width: 40, height: 40, alignItems: 'flex-end', justifyContent: 'center' }}
+            >
+              <Icon
+                as={MaterialIcons}
+                name="add"
+                color="gray.200"
+                size={7}
+              />
+            </TouchableOpacity>
+          }
+        </>
         :
         <>
           {!validSubscription &&

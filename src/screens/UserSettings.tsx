@@ -14,6 +14,7 @@ import { Button } from "@components/Button";
 
 import DefaultAvatarImg from '@assets/userPhotoDefault.png';
 import { useAuth } from "@hooks/useAuth";
+import { ScreenActions } from "@components/ScreenActions";
 
 const PHOTO_SIZE = 33;
 
@@ -26,7 +27,7 @@ export function UserSettings() {
 
   const [currentSubscription, setCurrentSubscription] = useState<string | null | undefined>('');
 
-  const { user, setUserContext, customerInfo } = useAuth();
+  const { user, setUserContext, customerInfo, isAdmin } = useAuth();
 
   const toast = useToast();
 
@@ -118,7 +119,11 @@ export function UserSettings() {
           break;
       }
     } else {
-      setCurrentSubscription('Nenhuma')
+      if (isAdmin) {
+        setCurrentSubscription('Admin')
+      } else {
+        setCurrentSubscription('Nenhuma')
+      }
     }
   }, [customerInfo]))
 
@@ -126,6 +131,7 @@ export function UserSettings() {
   return (
     <VStack flex={1}>
       <Header title="Usuário" showBackButton from={'home'} />
+      <ScreenActions backGround="gray.700" />
 
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
@@ -158,7 +164,7 @@ export function UserSettings() {
             onPress={handleUserPhotoSelect}
           >
             <Text
-              color="yellow.500"
+              color="primary.700"
               fontWeight="bold"
               fontSize="md"
               mt={2}

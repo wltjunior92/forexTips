@@ -27,9 +27,7 @@ export function FeedPostCard({ userName, createdAt, message, videoUrl, imageUrl,
     <VStack
       bg="gray.600"
       p={4}
-      mx={6}
-      mb={6}
-      borderRadius={8}
+      mb={'1px'}
     >
       <HStack alignItems="center">
         <Image
@@ -62,7 +60,8 @@ export function FeedPostCard({ userName, createdAt, message, videoUrl, imageUrl,
       {!!message &&
         <Box
           width="100%"
-          my={2}
+          mb={2}
+          mt={4}
         >
           <Text
             color="gray.100"

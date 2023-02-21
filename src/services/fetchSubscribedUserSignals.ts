@@ -5,30 +5,33 @@ import { ISignal } from 'src/interfaces/ISignal';
 type Props = {
   setSignalsAction: (value: ISignal[]) => void;
   setIsLoadingAction: (value: boolean) => void;
-  daysToSearch: string;
 }
 
-export async function fetchSubscribedUserSignals({ setSignalsAction, setIsLoadingAction, daysToSearch }: Props) {
+export async function fetchSubscribedUserSignals({ setSignalsAction, setIsLoadingAction }: Props) {
   try {
     const currentDay = new Date();
-    const dayBefore = new Date(new Date().setDate(currentDay.getDate() - parseInt(daysToSearch)));
+    const daysBefore = new Date(new Date().setDate(currentDay.getDate() - 10));
 
-    const startDate = firestore.Timestamp.fromDate(dayBefore)
+    const startDate = firestore.Timestamp.fromDate(daysBefore)
     const subscribe = firestore()
       .collection('signals')
-      .orderBy('createdAt', 'asc')
+      .orderBy('createdAt', 'desc')
       .where('createdAt', '>', startDate)
       .onSnapshot(querySnapshot => {
-        const data = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as ISignal[];
+        const data = querySnapshot.docs.map(doc => {
+          return ({
+            id: doc.id,
+            ...doc.data(),
+          })
+        }) as ISignal[];
 
-        const sortByStatus = data.sort(signal => {
-          if (signal.status === 'ativo')
+        const sortByStatus = data.sort((a, b) => {
+          if (a.status === 'ativo' && b.status !== 'ativo') {
             return -1;
-          return 1
-
+          } else if (a.status !== 'ativo' && b.status === 'ativo') {
+            return 1;
+          }
+          return 0;
         })
 
         setSignalsAction(sortByStatus);

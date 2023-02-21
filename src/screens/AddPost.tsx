@@ -163,6 +163,7 @@ export function AddPost() {
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
+        pt={4}
       >
         <VStack
           flex={1}
