@@ -63,6 +63,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
               setIsAdmin(foundUser.isAdmin);
             })
             .catch(error => console.log(error))
+            .finally(() => setIsLoadingApplication(false))
         }
       } catch (error) {
         console.log(error)

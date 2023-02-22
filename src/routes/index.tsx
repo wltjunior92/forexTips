@@ -4,9 +4,10 @@ import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { AuthRoutes } from "./auth.routes";
 import { AppRoutes } from './app.routes';
 import { useAuth } from '@hooks/useAuth';
+import { Loading } from '@components/Loading';
 
 export function Routes() {
-  const { user } = useAuth();
+  const { user, isLoadingApplication } = useAuth();
   const { colors } = useTheme();
   const theme = DefaultTheme;
   theme.colors.background = colors.gray[700]
@@ -14,7 +15,17 @@ export function Routes() {
   return (
     <Box flex={1} bg="gray.700">
       <NavigationContainer theme={theme}>
-        {user ? <AppRoutes /> : <AuthRoutes />}
+        {
+          user ?
+            <>
+              {isLoadingApplication ?
+                <Loading /> :
+                <AppRoutes />
+              }
+            </>
+            :
+            <AuthRoutes />
+        }
       </NavigationContainer>
     </Box>
   );

@@ -1,4 +1,5 @@
 import Purchases, { CustomerInfo } from 'react-native-purchases';
+import { tagActiveSubscription } from './notificationsTags';
 import { updateUserSubscriptionStatus } from './updateUserSubscriptionStatus';
 
 export async function checkUserSubscriptionStatus(
@@ -18,6 +19,7 @@ export async function checkUserSubscriptionStatus(
       await updateUserSubscriptionStatus(userUid as string, true, setValidSubscriptionAction)
     } else {
       await updateUserSubscriptionStatus(userUid as string, false, setValidSubscriptionAction)
+      tagActiveSubscription('false')
     }
   } catch (error) {
     console.log(error);

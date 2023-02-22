@@ -44,7 +44,7 @@ const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
 export function AppRoutes() {
   const { sizes, colors } = useTheme();
 
-  const { setValidSubscriptionAction, user, setCustomerInfoAction } = useAuth();
+  const { user } = useAuth();
 
   const iconSize = sizes[6];
 
@@ -76,12 +76,19 @@ export function AppRoutes() {
         component={Feed}
         options={{
           tabBarIcon: ({ color }) => (
-            <HomeSvg
-              stroke={color}
-              strokeWidth='20'
-              width={iconSize}
-              height={iconSize}
-            />
+            <Circle
+              size={'45px'}
+              bg="gray.600"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <HomeSvg
+                stroke={color}
+                strokeWidth='20'
+                width={iconSize}
+                height={iconSize}
+              />
+            </Circle>
           ),
           tabBarAccessibilityLabel: 'Feed',
           tabBarButton: (props) => <TouchableOpacity activeOpacity={0.6} style={{ width: 72, height: 72 }} {...props} />
@@ -92,12 +99,19 @@ export function AppRoutes() {
         component={Educational}
         options={{
           tabBarIcon: ({ color }) => (
-            <BookSvg
-              stroke={color}
-              strokeWidth='20'
-              width={iconSize}
-              height={iconSize}
-            />
+            <Circle
+              size={'45px'}
+              bg="gray.600"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <BookSvg
+                stroke={color}
+                strokeWidth='20'
+                width={iconSize}
+                height={iconSize}
+              />
+            </Circle>
           ),
           tabBarAccessibilityLabel: 'Educacional',
           tabBarButton: (props) => <TouchableOpacity activeOpacity={0.6} style={{ width: 72, height: 72 }} {...props} />
@@ -130,12 +144,19 @@ export function AppRoutes() {
         component={TradeChart}
         options={{
           tabBarIcon: ({ color }) => (
-            <ChartSvg
-              stroke={color}
-              strokeWidth='20'
-              width={iconSize}
-              height={iconSize}
-            />
+            <Circle
+              size={'45px'}
+              bg="gray.600"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <ChartSvg
+                stroke={color}
+                strokeWidth='20'
+                width={iconSize}
+                height={iconSize}
+              />
+            </Circle>
           ),
           tabBarAccessibilityLabel: 'Cart Trading',
           tabBarButton: (props) => <TouchableOpacity activeOpacity={0.6} style={{ width: 72, height: 72 }} {...props} />
@@ -146,12 +167,19 @@ export function AppRoutes() {
         component={Tools}
         options={{
           tabBarIcon: ({ color }) => (
-            <ToolsSvg
-              stroke={color}
-              strokeWidth='20'
-              width={iconSize}
-              height={iconSize}
-            />
+            <Circle
+              size={'45px'}
+              bg="gray.600"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <ToolsSvg
+                stroke={color}
+                strokeWidth='20'
+                width={iconSize}
+                height={iconSize}
+              />
+            </Circle>
           ),
           tabBarAccessibilityLabel: 'Ferramentas',
           tabBarButton: (props) => <TouchableOpacity activeOpacity={0.1} style={{ width: 72, height: 72 }} {...props} />
