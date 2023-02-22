@@ -5,7 +5,8 @@ export async function postNewSignalNotification(symbol: string, limit: number, s
   try {
     const body = {
       filters: [
-        { "field": "tag", "key": "user_status", "relation": "=", "value": "user_logged_in" }
+        { "field": "tag", "key": "user_status", "relation": "=", "value": "user_logged_in" },
+        { "field": "tag", "key": "active_subscription", "relation": "=", "value": "true" },
       ],
       headings: { en: 'Novo sinal adicionado!' },
       contents: { en: `Temos um sinal de ${side === 'buy' ? 'compra' : 'venda'} para ${symbol} em ${limit}` },

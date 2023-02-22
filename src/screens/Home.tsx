@@ -29,11 +29,13 @@ export function Home() {
   };
 
   function handleOpenEditModal(signal: ISignal) {
+    console.log('Abriu modal')
     setShowEditModal(true);
     setSelectedSignal(signal)
   }
 
   function handleCloseEditModal() {
+    console.log('Fechou modal')
     setShowEditModal(false);
     setSelectedSignal(null)
   }
@@ -85,7 +87,7 @@ export function Home() {
         />
       }
     </VStack>
-  ), [signalsList])
+  ), [signalsList, showEditModal, isAdmin])
 
   return (homeScreen);
 };

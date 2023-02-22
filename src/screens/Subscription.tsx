@@ -13,6 +13,7 @@ import BackgroundImg from '@assets/background-subscription.png';
 import { useAuth } from "@hooks/useAuth";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { updateUserSubscriptionStatus } from "@services/updateUserSubscriptionStatus";
+import { tagActiveSubscription } from "@services/notificationsTags";
 
 export function Subscription() {
   const [isLoadingSubscriptions, setIsLoadingSubscriptions] = useState(true);
@@ -92,6 +93,7 @@ export function Subscription() {
 
   async function activateSubscription() {
     await updateUserSubscriptionStatus(user?.uid as string, true, setValidSubscriptionAction);
+    tagActiveSubscription('true');
 
     navigator.navigate('home');
   }
@@ -103,7 +105,6 @@ export function Subscription() {
       const purchaseMade = await Purchases.purchasePackage(annualSubscription?.package as PurchasesPackage);
 
       if (typeof purchaseMade.customerInfo.entitlements.active.premium !== "undefined") {
-        // Activate subscription
         await activateSubscription();
         setCustomerInfoAction(purchaseMade.customerInfo);
       }
@@ -135,7 +136,6 @@ export function Subscription() {
       const purchaseMade = await Purchases.purchasePackage(monthlySubscription?.package as PurchasesPackage);
 
       if (typeof purchaseMade.customerInfo.entitlements.active.premium !== "undefined") {
-        // Activate subscription
         await activateSubscription();
         setCustomerInfoAction(purchaseMade.customerInfo);
       }
