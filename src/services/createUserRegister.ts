@@ -2,7 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import Purchases from 'react-native-purchases';
 
 export async function createNewUserRegister(userUid: string, userName: string, userEmail: string) {
-  console.log('Configuring new User on Database')
+  console.log('Configuring new User on Firebase')
   await firestore()
     .collection('users')
     .add({
