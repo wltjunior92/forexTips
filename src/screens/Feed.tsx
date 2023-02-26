@@ -111,6 +111,7 @@ export function Feed() {
 
   useFocusEffect(useCallback(() => {
     try {
+      if (isAdmin) return;
       checkUserSubscriptionStatus(setCustomerInfoAction, user?.uid as string, setValidSubscriptionAction, loadedCustomer)
     } catch (error) {
       const err = error as unknown as Error;

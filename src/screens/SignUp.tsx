@@ -57,7 +57,12 @@ export function SignUp() {
 
     auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(() => Alert.alert('Criar conta', 'Usuário criado com sucesso'))
+      .then(result => {
+        if (result.additionalUserInfo?.isNewUser) {
+          createNewUserRegister(result.user.uid, result.user.displayName || '', result.user.email || '');
+        }
+        Alert.alert('Criar conta', 'Usuário criado com sucesso');
+      })
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
           emailInputRef.current?.focus();
@@ -86,12 +91,10 @@ export function SignUp() {
       return Alert.alert('Criar conta', 'O campo "Senha" é obrigatório');
     }
 
+    console.log('entrou na função para criar registro no firebase')
     auth()
       .signInWithEmailAndPassword(email, password)
-      .then(async (result) => {
-        if (result.additionalUserInfo?.isNewUser) {
-          await createNewUserRegister(result.user.uid, result.user.displayName || '', result.user.email || '');
-        }
+      .then((result) => {
         setUserContext(result.user);
       })
       .catch(error => {
